@@ -16,7 +16,6 @@ if (!(Test-Path "$nuget")){
   $webclient.DownloadFile("https://dist.nuget.org/win-x86-commandline/latest/nuget.exe", $nuget)
 }
 
-exit
 $assemblyInfos = gci -r AssemblyInfo.cs
 
 foreach ($info in $assemblyInfos) {
@@ -31,5 +30,5 @@ foreach ($info in $assemblyInfos) {
 
 
 if ($push) {
-  & $nuget push ".\pack\QuickGrid.$version.nupkg" -ApiKey $apiKey  
+  & $nuget push ".\pack\QuickGrid.$version.nupkg" -ApiKey $apiKey
 }
