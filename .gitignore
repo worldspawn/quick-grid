@@ -1,0 +1,11 @@
+.vs
+bin
+obj
+*.
+pack
+*.user.csproj
+*.csproj.user
+packages
+*.nupkg
+bower_components
+node_modules
