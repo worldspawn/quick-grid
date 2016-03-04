@@ -9,3 +9,6 @@ packages
 *.nupkg
 bower_components
 node_modules
+coverage
+.tmp
+*.tpl.js
