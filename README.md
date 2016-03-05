@@ -70,7 +70,7 @@ The angularjs
 
 ``` js
 var controller = ['SearchModel', '$scope', '$http',
-  function (SearchModel, $scope, alertService, $http) {
+  function (SearchModel, $scope, $http) {
     var model = {
       search: new SearchModel('ModifiedUtcDate desc'),
       results: null        
@@ -85,9 +85,7 @@ var controller = ['SearchModel', '$scope', '$http',
           model.results = xhr.data.results;
           return xhr.data;
         })
-        .catch(function (err) {
-          console.error(err);
-        });
+        .catch(console.error);
     }
 
     model.search.attachToScope($scope, search);
