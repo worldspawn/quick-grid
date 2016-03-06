@@ -10,6 +10,8 @@ docs to come :)
 bower install ng-quick-grid
 ```
 
+You should add the `ngQuickGrid` and `quick-grid-partials`
+
 ### Nuget
 
 ```

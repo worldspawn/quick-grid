@@ -42,7 +42,7 @@ gulp.task('partials', function () {
       quotes: true
     }))
     .pipe($.ngHtml2js({
-      moduleName: 'template-partials',
+      moduleName: 'quick-grid-partials',
       prefix: '/quick-grid/',
     }))
     .pipe($.rename(function(path){
