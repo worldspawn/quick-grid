@@ -8,15 +8,24 @@ namespace QuickGrid
     {
         public QueryResult()
         {
-            PageCount = new Lazy<int>(() => Total.Value / PageSize + (Total.Value % PageSize > 0 ? 1 : 0) ?? 0);
+            PageCount = new Lazy<int?>(() =>
+            {
+                if (Total.Value == null)
+                {
+                    return null;
+                }
+
+                return Total.Value/PageSize + (Total.Value%PageSize > 0 ? 1 : 0) ?? 0;
+            });
         }
 
-        [JsonConverter(typeof(LazyConverter<int>))]
-        public Lazy<int> Total { get; set; }
-        [JsonConverter(typeof(LazyConverter<int>))]
-        public Lazy<int> PageCount { get; }
+        [JsonConverter(typeof(LazyConverter<int?>))]
+        public Lazy<int?> Total { get; set; }
+        [JsonConverter(typeof(LazyConverter<int?>))]
+        public Lazy<int?> PageCount { get; }
         public int PageIndex { get; set; }
         public int? PageSize { get; set; }
         public IQueryable<T> Results { get; set; }
+        public string FilterHash { get; set; }
     }
 }
