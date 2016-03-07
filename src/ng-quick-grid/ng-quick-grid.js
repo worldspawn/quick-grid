@@ -17,11 +17,6 @@
         }]
       };
     });
-
-  /*
-model.addFilter('Company.Name', '%');
-
-    */
 })();
 (function (module) {
   try {
@@ -82,13 +77,10 @@ model.addFilter('Company.Name', '%');
   function PrefixOperator(value, operator) {
     this.value = value;
     this.toJSON = function () {
-      if (!this.value) {
+      if (this.value === null || this.value === undefined) {
         return undefined;
       }
       var value = this.value;
-      if (value.toJSON) {
-        value = value.toJSON();
-      }
       return operator + value;
     };
   }
@@ -97,56 +89,43 @@ model.addFilter('Company.Name', '%');
     '%': function (value) {
       this.value = value;
       this.toJSON = function () {
-        if (!this.value) {
+        if (this.value === null || this.value === undefined) {
           return undefined;
         }
         var value = this.value;
-        if (value.toJSON) {
-          value = value.toJSON();
-        }
         return '%' + value + '%';
       };
     },
     '%~': function (value) {
       this.value = value;
       this.toJSON = function () {
-        if (!this.value) {
+        if (this.value === null || this.value === undefined) {
           return undefined;
         }
         var value = this.value;
-        if (value.toJSON) {
-          value = value.toJSON();
-        }
         return '%' + value;
       };
     },
     '~%': function (value) {
       this.value = value;
       this.toJSON = function () {
-        if (!this.value) {
+        if (this.value === null || this.value === undefined) {
           return undefined;
         }
         var value = this.value;
-        if (value.toJSON) {
-          value = value.toJSON();
-        }
         return value + '%';
       };
     },
     '()': function (value) {
       this.value = value;
       this.toJSON = function () {
-        if (!this.value) {
+        if (this.value === null || this.value === undefined) {
           return undefined;
         }
 
         var values = [];
         this.value.forEach(function (x) {
-          if (x.toJSON) {
-            values.push(x.toJSON());
-          } else {
-            values.push(x);
-          }
+          values.push(x);
         });
         return '(' + values.join(',') + ')';
       };
@@ -199,7 +178,9 @@ model.addFilter('Company.Name', '%');
         return self.paging;
       }, function (newValue, oldValue) {
         if (newValue.sortBy !== oldValue.sortBy || newValue.pageIndex !== oldValue.pageIndex) {
-          cb(self.model, newValue, false);
+          cb(angular.extend({}, self.model, {
+            filters: self.filters
+          }), newValue, false);
         }
       }, true);
     }

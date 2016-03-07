@@ -12,9 +12,4 @@
         }
       };
     });
-
-  /*
-model.addFilter('Company.Name', '%');
-
-    */
 })();
