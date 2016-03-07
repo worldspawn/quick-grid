@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Quick-grid by kiandra-it</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Quick-grid</h1>
+      <h2 class="project-tagline">Dotnet helper classes for querying and and angular front end directives</h2>
+      <a href="https://github.com/kiandra-it/quick-grid" class="btn">View on GitHub</a>
+      <a href="https://github.com/kiandra-it/quick-grid/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/kiandra-it/quick-grid/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="quick-grid" class="anchor" href="#quick-grid" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Quick Grid</h1>
+
+<h2>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h2>
+
+<h3>
+<a id="bower" class="anchor" href="#bower" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Bower</h3>
+
+<p>To add support to your angular application install the bower package</p>
+
+<pre><code>bower install ng-quick-grid
+</code></pre>
+
+<p>You should add the <code>ngQuickGrid</code> and <code>quick-grid-partials</code> modules to your application.</p>
+
+<h3>
+<a id="nuget" class="anchor" href="#nuget" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Nuget</h3>
+
+<p>To add support to your .Net application install the nuget package.</p>
+
+<pre><code>Install-Package QuickGrid
+</code></pre>
+
+<h2>
+<a id="examples" class="anchor" href="#examples" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Examples</h2>
+
+<p>Adding markup for use in your angular application. Quick grid automatically re queries whenever the model or filters are changed and sets the page index back to zero. The <em>model</em> is an arbitrary object; its members are sent to the server as part of the query request. Filters are structured query parameters that are automatically applied to the query and they are explained in more detail below.</p>
+
+<div class="highlight highlight-text-html-basic"><pre>&lt;<span class="pl-ent">form</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>form<span class="pl-pds">"</span></span> <span class="pl-e">novalidate</span>&gt;
+  &lt;<span class="pl-ent">div</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>row<span class="pl-pds">"</span></span>&gt;
+    &lt;<span class="pl-ent">div</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>col-lg-4<span class="pl-pds">"</span></span>&gt;
+      &lt;<span class="pl-ent">div</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>form-group<span class="pl-pds">"</span></span>&gt;
+        &lt;<span class="pl-ent">label</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>control-label<span class="pl-pds">"</span></span>&gt;Order Type&lt;/<span class="pl-ent">label</span>&gt;
+        &lt;<span class="pl-ent">select</span> <span class="pl-e">ng-model</span>=<span class="pl-s"><span class="pl-pds">"</span>ctrl.model.search.model.type<span class="pl-pds">"</span></span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>orderType<span class="pl-pds">"</span></span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>form-control<span class="pl-pds">"</span></span>&gt;
+          &lt;<span class="pl-ent">option</span> <span class="pl-e">value</span>=<span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>&gt;--&lt;/<span class="pl-ent">option</span>&gt;
+          &lt;<span class="pl-ent">option</span> <span class="pl-e">value</span>=<span class="pl-s"><span class="pl-pds">"</span>Internal<span class="pl-pds">"</span></span>&gt;Internal&lt;/<span class="pl-ent">option</span>&gt;
+          &lt;<span class="pl-ent">option</span> <span class="pl-e">value</span>=<span class="pl-s"><span class="pl-pds">"</span>External<span class="pl-pds">"</span></span>&gt;External&lt;/<span class="pl-ent">option</span>&gt;
+        &lt;/<span class="pl-ent">select</span>&gt;
+      &lt;/<span class="pl-ent">div</span>&gt;
+    &lt;/<span class="pl-ent">div</span>&gt;
+  &lt;/<span class="pl-ent">div</span>&gt;
+&lt;/<span class="pl-ent">form</span>&gt;</pre></div>
+
+<p>This is an example table running on quick grid. Quick grid will handle sort clicks and re query the source while maintaining the current page index. The value of <code>quick-sort</code> just needs to be a valid member expression for the target class. Valid members are only those included in the projection and not the source object.</p>
+
+<div class="highlight highlight-text-html-basic"><pre>&lt;<span class="pl-ent">table</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>table table-hover<span class="pl-pds">"</span></span> <span class="pl-e">quick-grid</span> <span class="pl-e">data-grid-model</span>=<span class="pl-s"><span class="pl-pds">"</span>ctrl.model.search<span class="pl-pds">"</span></span>&gt;
+  &lt;<span class="pl-ent">thead</span>&gt;
+    &lt;<span class="pl-ent">tr</span>&gt;
+      &lt;<span class="pl-ent">th</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>col-lg-2<span class="pl-pds">"</span></span> <span class="pl-e">quick-sort</span>=<span class="pl-s"><span class="pl-pds">"</span>Type<span class="pl-pds">"</span></span>&gt;Order Type&lt;/<span class="pl-ent">th</span>&gt;
+      &lt;<span class="pl-ent">th</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>col-lg-2<span class="pl-pds">"</span></span> <span class="pl-e">quick-sort</span>=<span class="pl-s"><span class="pl-pds">"</span>Company.Name<span class="pl-pds">"</span></span>&gt;Company&lt;/<span class="pl-ent">th</span>&gt;
+      &lt;<span class="pl-ent">th</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>col-lg-3<span class="pl-pds">"</span></span> <span class="pl-e">quick-sort</span>=<span class="pl-s"><span class="pl-pds">"</span>Company.Type<span class="pl-pds">"</span></span>&gt;Type&lt;/<span class="pl-ent">th</span>&gt;
+      &lt;<span class="pl-ent">th</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>col-lg-1<span class="pl-pds">"</span></span> <span class="pl-e">quick-sort</span>=<span class="pl-s"><span class="pl-pds">"</span>Amount<span class="pl-pds">"</span></span>&gt;Amount&lt;/<span class="pl-ent">th</span>&gt;
+      &lt;<span class="pl-ent">th</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>col-lg-2<span class="pl-pds">"</span></span> <span class="pl-e">quick-sort</span>=<span class="pl-s"><span class="pl-pds">"</span>EmailAddress<span class="pl-pds">"</span></span>&gt;Email Address&lt;/<span class="pl-ent">th</span>&gt;
+      &lt;<span class="pl-ent">th</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>col-lg-2<span class="pl-pds">"</span></span> <span class="pl-e">quick-sort</span>=<span class="pl-s"><span class="pl-pds">"</span>Status<span class="pl-pds">"</span></span>&gt;Status&lt;/<span class="pl-ent">th</span>&gt;
+    &lt;/<span class="pl-ent">tr</span>&gt;
+  &lt;/<span class="pl-ent">thead</span>&gt;
+  &lt;<span class="pl-ent">tbody</span>&gt;
+    &lt;<span class="pl-ent">tr</span> <span class="pl-e">ng-repeat</span>=<span class="pl-s"><span class="pl-pds">"</span>order in ctrl.model.results<span class="pl-pds">"</span></span>&gt;
+      &lt;<span class="pl-ent">td</span>&gt;{{::order.type}}&lt;/<span class="pl-ent">td</span>&gt;
+      &lt;<span class="pl-ent">td</span>&gt;{{::order.company.name}}&lt;/<span class="pl-ent">td</span>&gt;
+      &lt;<span class="pl-ent">td</span>&gt;{{::order.company.type)}}&lt;/<span class="pl-ent">td</span>&gt;
+      &lt;<span class="pl-ent">td</span>&gt;{{::order.amount}}&lt;/<span class="pl-ent">td</span>&gt;
+      &lt;<span class="pl-ent">td</span>&gt;{{::order.emailAddress}}&lt;/<span class="pl-ent">td</span>&gt;
+      &lt;<span class="pl-ent">td</span>&gt;{{::order.status}}&lt;/<span class="pl-ent">td</span>&gt;
+    &lt;/<span class="pl-ent">tr</span>&gt;
+  &lt;/<span class="pl-ent">tbody</span>&gt;
+  &lt;<span class="pl-ent">tfoot</span>&gt;
+    &lt;<span class="pl-ent">tr</span>&gt;
+      &lt;<span class="pl-ent">td</span> <span class="pl-e">colspan</span>=<span class="pl-s"><span class="pl-pds">"</span>6<span class="pl-pds">"</span></span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>text-center<span class="pl-pds">"</span></span> <span class="pl-e">quick-paging</span>&gt;&lt;/<span class="pl-ent">td</span>&gt;
+    &lt;/<span class="pl-ent">tr</span>&gt;
+  &lt;/<span class="pl-ent">tfoot</span>&gt;
+&lt;/<span class="pl-ent">table</span>&gt;</pre></div>
+
+<p>AngularJS example. This is an example controller that demonstrates creating a search model and binding it (<code>attachToScope</code>) to the search model so it re queries when a change is made.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> controller <span class="pl-k">=</span> [<span class="pl-s"><span class="pl-pds">'</span>SearchModel<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>$scope<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>$http<span class="pl-pds">'</span></span>,
+  <span class="pl-k">function</span> (<span class="pl-smi">SearchModel</span>, <span class="pl-smi">$scope</span>, <span class="pl-smi">$http</span>) {
+    <span class="pl-k">var</span> model <span class="pl-k">=</span> {
+      search<span class="pl-k">:</span> <span class="pl-k">new</span> <span class="pl-en">SearchModel</span>(<span class="pl-s"><span class="pl-pds">'</span>ModifiedUtcDate desc<span class="pl-pds">'</span></span>),
+      results<span class="pl-k">:</span> <span class="pl-c1">null</span>        
+    };
+
+    <span class="pl-v">this</span>.<span class="pl-smi">model</span> <span class="pl-k">=</span> model;
+
+    <span class="pl-k">function</span> <span class="pl-en">search</span> (<span class="pl-smi">searchModel</span>, <span class="pl-smi">paging</span>) {
+      <span class="pl-k">var</span> payload <span class="pl-k">=</span> <span class="pl-smi">angular</span>.<span class="pl-en">extend</span>({}, searchModel, paging);
+      <span class="pl-k">return</span> <span class="pl-smi">$http</span>.<span class="pl-en">get</span>(<span class="pl-s"><span class="pl-pds">'</span>/api/orders<span class="pl-pds">'</span></span>, { params<span class="pl-k">:</span> payload })
+        .<span class="pl-en">then</span>(<span class="pl-k">function</span> (<span class="pl-smi">xhr</span>) {
+          <span class="pl-smi">model</span>.<span class="pl-smi">results</span> <span class="pl-k">=</span> <span class="pl-smi">xhr</span>.<span class="pl-c1">data</span>.<span class="pl-smi">results</span>;
+          <span class="pl-k">return</span> <span class="pl-smi">xhr</span>.<span class="pl-c1">data</span>;
+        })
+        .<span class="pl-en">catch</span>(<span class="pl-en">console</span>.error);
+    }
+
+    <span class="pl-smi">model</span>.<span class="pl-smi">search</span>.<span class="pl-en">attachToScope</span>($scope, search);
+  }];</pre></div>
+
+<p>The server side (csharp, webapi). This shows an example QueryOptions implementation. This example does not make use of filters, instead the properties are deserialized from the model sent from the client. How these are used is up the programmer, they have to manually apply them to the query.</p>
+
+<div class="highlight highlight-source-cs"><pre><span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">OrderListRequest</span> : <span class="pl-k">QueryOptions</span>
+{
+    <span class="pl-k">public</span> <span class="pl-en">OrderListRequest</span>()
+        : <span class="pl-c1">base</span>(20, "ModifiedUtcDate desc")
+    {
+    }
+
+    <span class="pl-k">public</span> OrderType? <span class="pl-en">Type</span> { <span class="pl-k">get</span>; <span class="pl-k">set</span>; }
+    <span class="pl-k">public</span> <span class="pl-k">string</span> <span class="pl-en">CompanyName</span> { <span class="pl-k">get</span>; <span class="pl-k">set</span>; }
+    <span class="pl-k">public</span> CompanyType? <span class="pl-en">CompanyType</span> { <span class="pl-k">get</span>; <span class="pl-k">set</span>; }
+    <span class="pl-k">public</span> <span class="pl-k">decimal</span> <span class="pl-en">Amount</span> { <span class="pl-k">get</span>; <span class="pl-k">set</span>; }
+    <span class="pl-k">public</span> <span class="pl-k">string</span> <span class="pl-en">EmailAddress</span> { <span class="pl-k">get</span>; <span class="pl-k">set</span>; }
+    <span class="pl-k">public</span> <span class="pl-k">string</span> <span class="pl-en">Status</span> { <span class="pl-k">get</span>; <span class="pl-k">set</span>; }
+}</pre></div>
+
+<p>This is an example route that shows how to make use of a request.</p>
+
+<div class="highlight highlight-source-cs"><pre>[Route]
+<span class="pl-k">public</span> IHttpActionResult Get([FromUri] OrderListRequest request)
+{
+    <span class="pl-k">var</span> source = _dbContext.Orders.AsQueryable();
+
+    <span class="pl-k">if</span> (request.Type.HasValue)
+    {
+        source = source.Where(x =&gt; x.Type == request.Type);
+    }
+
+    <span class="pl-k">var</span> query = source        
+        .Select(order =&gt; <span class="pl-k">new</span>
+        {
+            order.Id,
+            order.Type,
+            Company = <span class="pl-k">new</span>
+            {
+                order.Company.Name,
+                order.Company.Type
+            },
+            order.Amount
+            order.EmailAddress,
+            Status = order.Status.Name,
+            order.ModifiedUtcDate,            
+        });
+
+    <span class="pl-k">var</span> result = request.Apply(query);
+    <span class="pl-k">return</span> Ok(result);
+}</pre></div>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/kiandra-it/quick-grid">Quick-grid</a> is maintained by <a href="https://github.com/kiandra-it">kiandra-it</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
