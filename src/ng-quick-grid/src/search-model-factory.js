@@ -4,7 +4,7 @@
   function PrefixOperator(value, operator) {
     this.value = value;
     this.toJSON = function () {
-      if (this.value === null || this.value === undefined) {
+      if (this.value === null || this.value === undefined || this.value === '') {
         return undefined;
       }
       var value = this.value;
@@ -16,7 +16,7 @@
     '%': function (value) {
       this.value = value;
       this.toJSON = function () {
-        if (this.value === null || this.value === undefined) {
+        if (this.value === null || this.value === undefined || this.value === '') {
           return undefined;
         }
         var value = this.value;
@@ -26,7 +26,7 @@
     '%~': function (value) {
       this.value = value;
       this.toJSON = function () {
-        if (this.value === null || this.value === undefined) {
+        if (this.value === null || this.value === undefined || this.value === '') {
           return undefined;
         }
         var value = this.value;
@@ -36,7 +36,7 @@
     '~%': function (value) {
       this.value = value;
       this.toJSON = function () {
-        if (this.value === null || this.value === undefined) {
+        if (this.value === null || this.value === undefined || this.value === '') {
           return undefined;
         }
         var value = this.value;
@@ -46,7 +46,7 @@
     '()': function (value) {
       this.value = value;
       this.toJSON = function () {
-        if (this.value === null || this.value === undefined) {
+        if (this.value === null || this.value === undefined || this.value === '') {
           return undefined;
         }
 
