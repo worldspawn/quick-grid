@@ -37,6 +37,7 @@
         }
 
         model.search.attachToScope(scope, search);
+        scope.$digest();
         model.search.model.name = 'Foo';
         scope.$digest();
       });
@@ -201,22 +202,23 @@
             pageCount: 10,
             filterHash: 'test'
           });
+
+          //hacky
+          setTimeout(function () {
+            console.log(model.search.pageCount.length);
+            expect(model.search.pageCount.length).toBe(10);
+            done();
+          }, 500);
           return q.promise;
         }
+
         model.search.pageCount.length = 27;
         model.search.addFilter('Name', '%', 'Fred');
         model.search.attachToScope(scope, search);
         scope.$digest();
         expect(model.search.filters['Name'].value).toBe('Fred');
         model.search.filters['Name'].value = 'Foo';
-        scope.$watch(function () {
-          return model.search.filterHash;
-        }, function () {
-          expect(model.search.pageCount.length).toBe(10);
-          done();
-        });
         scope.$digest();
-
       });
     });
 

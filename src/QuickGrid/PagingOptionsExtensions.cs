@@ -29,7 +29,7 @@ namespace QuickGrid
             }
             else
             {
-                result.Total = new Lazy<int?>(() => filteredList.Count());
+                result.Total = new Lazy<int?>(() => orderedList.Count());
             }
 
             if (queryOptions.PageSize.HasValue)

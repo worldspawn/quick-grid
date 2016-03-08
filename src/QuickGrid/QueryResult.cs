@@ -10,7 +10,7 @@ namespace QuickGrid
         {
             PageCount = new Lazy<int?>(() =>
             {
-                if (Total.Value == null)
+                if (Total == null)
                 {
                     return null;
                 }

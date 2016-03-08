@@ -75,10 +75,29 @@
       var Constructor = operators[operator] || PrefixOperator;
       this.filters[key] = new Constructor(value, operator);
     },
-    attachToScope: function ($scope, cb) {
+    attachToScope: function ($scope, cb, runNow) {
       var self = this;
+      var pagingWatchHandle;
 
-      function onChange() {
+      function attachPagingWatch() {
+        pagingWatchHandle = $scope.$watch(function () {
+          return self.paging;
+        }, function (newValue, oldValue) {
+          if (newValue.sortBy !== oldValue.sortBy || newValue.pageIndex !== oldValue.pageIndex) {
+            cb(angular.extend({}, self.model, {
+              filters: self.filters
+            }), newValue, false);
+          }
+        }, true);
+      }
+
+      function onChange(newValue, oldValue) {
+        if (newValue === oldValue) {
+          return;
+        }
+        if (pagingWatchHandle) {
+          pagingWatchHandle();
+        }
         self.paging.pageIndex = 0;
         self.paging.filterHash = null;
         cb(angular.extend({}, self.model, {
@@ -90,6 +109,7 @@
             }
 
             self.paging.filterHash = result.filterHash;
+            attachPagingWatch();
           });
       }
 
@@ -101,15 +121,11 @@
         return self.filters;
       }, onChange, true);
 
-      $scope.$watch(function () {
-        return self.paging;
-      }, function (newValue, oldValue) {
-        if (newValue.sortBy !== oldValue.sortBy || newValue.pageIndex !== oldValue.pageIndex) {
-          cb(angular.extend({}, self.model, {
-            filters: self.filters
-          }), newValue, false);
-        }
-      }, true);
+      attachPagingWatch();
+
+      if (runNow) {
+        onChange(1, 2);
+      }
     }
   };
 
