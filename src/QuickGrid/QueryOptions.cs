@@ -87,8 +87,15 @@ namespace QuickGrid
             return list;
         }
 
-        private static object GetValue(Type type, string value)
+        private static object GetValue(Type sourceType, string value)
         {
+            var type = sourceType;
+            var sourceIsNullable = sourceType.IsGenericType && sourceType.GetGenericTypeDefinition() == typeof (Nullable<>);
+            if (sourceIsNullable)
+            {
+                type = sourceType.GenericTypeArguments[0];
+            }
+            
             if (type.IsEnum)
             {
                 return Enum.Parse(type, value);
@@ -102,7 +109,7 @@ namespace QuickGrid
             var em = EqualsEx.Match(filter);
             if (em.Success)
             {
-                return Expression.Equal(expression, Expression.Constant(GetValue(expression.Type, em.Groups[1].Value)));
+                return Expression.Equal(expression, Expression.Constant(GetValue(expression.Type, em.Groups[1].Value), expression.Type));
             }
 
             var cm = ContainsEx.Match(filter);
@@ -137,32 +144,32 @@ namespace QuickGrid
                     captures.Add(cam.Groups["val"].Captures[i]);
                 }
 
-                var array = Expression.NewArrayInit(expression.Type, captures.Select(x => Expression.Constant(GetValue(expression.Type, x.Value))));
+                var array = Expression.NewArrayInit(expression.Type, captures.Select(x => Expression.Constant(GetValue(expression.Type, x.Value), expression.Type)));
                 return Expression.Call(typeof(Enumerable), "Contains", new[] { expression.Type }, array, expression);
             }
 
             var gtem = GreaterThanEqualEx.Match(filter);
             if (gtem.Success)
             {
-                return Expression.GreaterThanOrEqual(expression, Expression.Constant(GetValue(expression.Type, gtem.Groups[1].Value)));
+                return Expression.GreaterThanOrEqual(expression, Expression.Constant(GetValue(expression.Type, gtem.Groups[1].Value), expression.Type));
             }
 
             var ltem = LessThanEqualEx.Match(filter);
             if (ltem.Success)
             {
-                return Expression.LessThanOrEqual(expression, Expression.Constant(GetValue(expression.Type, ltem.Groups[1].Value)));
+                return Expression.LessThanOrEqual(expression, Expression.Constant(GetValue(expression.Type, ltem.Groups[1].Value), expression.Type));
             }
 
             var gtm = GreaterThanEx.Match(filter);
             if (gtm.Success)
             {
-                return Expression.GreaterThan(expression, Expression.Constant(GetValue(expression.Type, gtm.Groups[1].Value)));
+                return Expression.GreaterThan(expression, Expression.Constant(GetValue(expression.Type, gtm.Groups[1].Value), expression.Type));
             }
 
             var ltm = LessThanEx.Match(filter);
             if (ltm.Success)
             {
-                return Expression.LessThan(expression, Expression.Constant(GetValue(expression.Type, ltm.Groups[1].Value)));
+                return Expression.LessThan(expression, Expression.Constant(GetValue(expression.Type, ltm.Groups[1].Value), expression.Type));
             }
 
             return null;
