@@ -67,7 +67,7 @@ namespace QuickGrid
                 MemberExpression memberExpression = null;
                 foreach (var memberPart in filter.Key.Split('.'))
                 {
-                    memberExpression = Expression.PropertyOrField((Expression) memberExpression ?? param, memberPart);
+                    memberExpression = Expression.PropertyOrField((Expression)memberExpression ?? param, memberPart);
                 }
 
                 var isNot = filter.Value.IndexOf(not, StringComparison.InvariantCultureIgnoreCase) == 0;
@@ -87,12 +87,22 @@ namespace QuickGrid
             return list;
         }
 
+        private static object GetValue(Type type, string value)
+        {
+            if (type.IsEnum)
+            {
+                return Enum.Parse(type, value);
+            }
+
+            return Convert.ChangeType(value, type);
+        }
+
         private static Expression ResolveFilterExpression(MemberExpression expression, string filter)
         {
             var em = EqualsEx.Match(filter);
             if (em.Success)
             {
-                return Expression.Equal(expression, Expression.Constant(Convert.ChangeType(em.Groups[1].Value, expression.Type)));
+                return Expression.Equal(expression, Expression.Constant(GetValue(expression.Type, em.Groups[1].Value)));
             }
 
             var cm = ContainsEx.Match(filter);
@@ -121,43 +131,43 @@ namespace QuickGrid
             if (cam.Success)
             {
                 var captures = new List<Capture>();
-                
+
                 for (var i = 0; i < cam.Groups["val"].Captures.Count; i++)
                 {
                     captures.Add(cam.Groups["val"].Captures[i]);
                 }
 
-                var array = Expression.NewArrayInit(expression.Type, captures.Select(x => Expression.Constant(Convert.ChangeType(x.Value, expression.Type))));
+                var array = Expression.NewArrayInit(expression.Type, captures.Select(x => Expression.Constant(GetValue(expression.Type, x.Value))));
                 return Expression.Call(typeof(Enumerable), "Contains", new[] { expression.Type }, array, expression);
             }
 
             var gtem = GreaterThanEqualEx.Match(filter);
             if (gtem.Success)
             {
-                return Expression.GreaterThanOrEqual(expression, Expression.Constant(Convert.ChangeType(gtem.Groups[1].Value, expression.Type)));
+                return Expression.GreaterThanOrEqual(expression, Expression.Constant(GetValue(expression.Type, gtem.Groups[1].Value)));
             }
 
             var ltem = LessThanEqualEx.Match(filter);
             if (ltem.Success)
             {
-                return Expression.LessThanOrEqual(expression, Expression.Constant(Convert.ChangeType(ltem.Groups[1].Value, expression.Type)));
+                return Expression.LessThanOrEqual(expression, Expression.Constant(GetValue(expression.Type, ltem.Groups[1].Value)));
             }
 
             var gtm = GreaterThanEx.Match(filter);
             if (gtm.Success)
             {
-                return Expression.GreaterThan(expression, Expression.Constant(Convert.ChangeType(gtm.Groups[1].Value, expression.Type)));
+                return Expression.GreaterThan(expression, Expression.Constant(GetValue(expression.Type, gtm.Groups[1].Value)));
             }
 
             var ltm = LessThanEx.Match(filter);
             if (ltm.Success)
             {
-                return Expression.LessThan(expression, Expression.Constant(Convert.ChangeType(ltm.Groups[1].Value, expression.Type)));
+                return Expression.LessThan(expression, Expression.Constant(GetValue(expression.Type, ltm.Groups[1].Value)));
             }
 
             return null;
         }
-        
+
         public static IQueryable<T> Order<T>(IQueryable<T> list, QueryOptions options)
         {
             if (options.SortBy == null)

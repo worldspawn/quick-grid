@@ -5,7 +5,7 @@ namespace QuickGrid.Tests
 {
     public class TestOptions : QueryOptions
     {
-        public TestOptions() : base(10, "Value", "Value")
+        public TestOptions() : base(10, "Value", "Value", "Numeric", "Date")
         {
             
         }

@@ -1,4 +1,5 @@
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
@@ -7,14 +8,30 @@ namespace QuickGrid.Tests
 {
     public class QueryFilterParsingTests
     {
+        private readonly IQueryable<ListItem> _items;
+
+        public class ListItem
+        {
+            public string Value { get; set; }
+            public DateTime Date { get; set; }
+            public int Numeric { get; set; }
+        }
+
+        public QueryFilterParsingTests()
+        {
+            _items = new List<ListItem>()
+            {
+                new ListItem() {Value = "One", Date = DateTime.UtcNow.AddYears(-5), Numeric = 50},
+                new ListItem() {Value = "Two", Date = DateTime.UtcNow.AddYears(-4), Numeric = 40},
+                new ListItem() {Value = "Three", Date = DateTime.UtcNow.AddYears(-3), Numeric = 30},
+                new ListItem() {Value = "Four", Date = DateTime.UtcNow.AddYears(-2), Numeric = 20},
+                new ListItem() {Value = "Five", Date = DateTime.UtcNow.AddYears(-1), Numeric = 10},
+            }.AsQueryable();
+        }
+
         [Fact]
         public void CanCorrectlyParseEqualsExpression()
         {
-            var objects = new [] {"one", "two", "three"}.Select(x => new
-            {
-                Value = x
-            }).AsQueryable();
-
             var options = new TestOptions
             {
                 Filters = new Dictionary<string, string>
@@ -23,7 +40,7 @@ namespace QuickGrid.Tests
                 }
             };
 
-            var list = QueryOptions.Filter(objects, options);
+            var list = QueryOptions.Filter(_items, options);
 
             Assert.Contains("Value == \"two\"", list.Expression.ToString());
         }
@@ -31,11 +48,6 @@ namespace QuickGrid.Tests
         [Fact]
         public void CanCorrectlyParseContainsExpression()
         {
-            var objects = new[] { "one", "two", "three" }.Select(x => new
-            {
-                Value = x
-            }).AsQueryable();
-
             var options = new TestOptions
             {
                 Filters = new Dictionary<string, string>
@@ -44,7 +56,7 @@ namespace QuickGrid.Tests
                 }
             };
 
-            var list = QueryOptions.Filter(objects, options);
+            var list = QueryOptions.Filter(_items, options);
 
             Assert.Contains("Value.Contains(\"two\")", list.Expression.ToString());
         }
@@ -52,11 +64,6 @@ namespace QuickGrid.Tests
         [Fact]
         public void CanCorrectlyParseStartsWithExpression()
         {
-            var objects = new[] { "one", "two", "three" }.Select(x => new
-            {
-                Value = x
-            }).AsQueryable();
-
             var options = new TestOptions
             {
                 Filters = new Dictionary<string, string>
@@ -65,7 +72,7 @@ namespace QuickGrid.Tests
                 }
             };
 
-            var list = QueryOptions.Filter(objects, options);
+            var list = QueryOptions.Filter(_items, options);
 
             Assert.Contains("Value.StartsWith(\"two\")", list.Expression.ToString());
         }
@@ -73,11 +80,6 @@ namespace QuickGrid.Tests
         [Fact]
         public void CanCorrectlyParseEndsWithExpression()
         {
-            var objects = new[] { "one", "two", "three" }.Select(x => new
-            {
-                Value = x
-            }).AsQueryable();
-
             var options = new TestOptions
             {
                 Filters = new Dictionary<string, string>
@@ -86,7 +88,7 @@ namespace QuickGrid.Tests
                 }
             };
 
-            var list = QueryOptions.Filter(objects, options);
+            var list = QueryOptions.Filter(_items, options);
 
             Assert.Contains("Value.EndsWith(\"two\")", list.Expression.ToString());
         }
@@ -94,11 +96,6 @@ namespace QuickGrid.Tests
         [Fact]
         public void CanCorrectlyParseContainsArrayExpression()
         {
-            var objects = new[] { "one", "two", "three" }.Select(x => new
-            {
-                Value = x
-            }).AsQueryable();
-
             var options = new TestOptions
             {
                 Filters = new Dictionary<string, string>
@@ -107,7 +104,7 @@ namespace QuickGrid.Tests
                 }
             };
 
-            var list = QueryOptions.Filter(objects, options);
+            var list = QueryOptions.Filter(_items, options);
 
             Assert.Contains("new [] {\"one\", \"two\"}.Contains(r.Value)", list.Expression.ToString());
         }
@@ -115,11 +112,6 @@ namespace QuickGrid.Tests
         [Fact]
         public void CanCorrectlyParseContainsArrayWithCommaExpression()
         {
-            var objects = new[] { "one", "two", "three" }.Select(x => new
-            {
-                Value = x
-            }).AsQueryable();
-
             var options = new TestOptions
             {
                 Filters = new Dictionary<string, string>
@@ -128,7 +120,7 @@ namespace QuickGrid.Tests
                 }
             };
 
-            var list = QueryOptions.Filter(objects, options);
+            var list = QueryOptions.Filter(_items, options);
 
             Assert.Contains("new [] {\"one,\", \"two\"}.Contains(r.Value)", list.Expression.ToString());
         }
@@ -136,11 +128,6 @@ namespace QuickGrid.Tests
         [Fact]
         public void CanCorrectlyParseContainsArrayWithNotExpression()
         {
-            var objects = new[] { "one", "two", "three" }.Select(x => new
-            {
-                Value = x
-            }).AsQueryable();
-
             var options = new TestOptions
             {
                 Filters = new Dictionary<string, string>
@@ -149,7 +136,7 @@ namespace QuickGrid.Tests
                 }
             };
 
-            var list = QueryOptions.Filter(objects, options);
+            var list = QueryOptions.Filter(_items, options);
 
             Assert.Contains("Not(new [] {\"one\", \"two\"}.Contains(r.Value))", list.Expression.ToString());
         }
@@ -157,107 +144,80 @@ namespace QuickGrid.Tests
         [Fact]
         public void CanCorrectlyParseGreaterThanExpression()
         {
-            var objects = new[] { 10, 20, 30 }.Select(x => new
-            {
-                Value = x
-            }).AsQueryable();
-
             var options = new TestOptions
             {
                 Filters = new Dictionary<string, string>
                 {
-                    {"Value", ">20"}
+                    {"Numeric", ">20"}
                 }
             };
 
-            var list = QueryOptions.Filter(objects, options);
+            var list = QueryOptions.Filter(_items, options);
             
-            Assert.Contains("r.Value > 20", list.Expression.ToString());
+            Assert.Contains("r.Numeric > 20", list.Expression.ToString());
         }
 
         [Fact]
         public void CanCorrectlyParseGreaterThanEqualsExpression()
         {
-            var objects = new[] { 10, 20, 30 }.Select(x => new
-            {
-                Value = x
-            }).AsQueryable();
-
             var options = new TestOptions
             {
                 Filters = new Dictionary<string, string>
                 {
-                    {"Value", ">=20"}
+                    {"Numeric", ">=20"}
                 }
             };
 
-            var list = QueryOptions.Filter(objects, options);
+            var list = QueryOptions.Filter(_items, options);
 
-            Assert.Contains("r.Value >= 20", list.Expression.ToString());
+            Assert.Contains("r.Numeric >= 20", list.Expression.ToString());
         }
 
         [Fact]
         public void CanCorrectlyParseLessThanExpression()
         {
-            var objects = new[] { 10, 20, 30 }.Select(x => new
-            {
-                Value = x
-            }).AsQueryable();
-
             var options = new TestOptions
             {
                 Filters = new Dictionary<string, string>
                 {
-                    {"Value", "<20"}
+                    {"Numeric", "<20"}
                 }
             };
 
-            var list = QueryOptions.Filter(objects, options);
+            var list = QueryOptions.Filter(_items, options);
 
-            Assert.Contains("r.Value < 20", list.Expression.ToString());
+            Assert.Contains("r.Numeric < 20", list.Expression.ToString());
         }
 
         [Fact]
         public void CanCorrectlyParseLessThanEqualsExpression()
         {
-            var objects = new[] { 10, 20, 30 }.Select(x => new
-            {
-                Value = x
-            }).AsQueryable();
-
             var options = new TestOptions
             {
                 Filters = new Dictionary<string, string>
                 {
-                    {"Value", "<=20"}
+                    {"Numeric", "<=20"}
                 }
             };
 
-            var list = QueryOptions.Filter(objects, options);
+            var list = QueryOptions.Filter(_items, options);
 
-            Assert.Contains("r.Value <= 20", list.Expression.ToString());
+            Assert.Contains("r.Numeric <= 20", list.Expression.ToString());
         }
 
         [Fact]
         public void CanCorrectlyParseLessThanEqualsWithDateExpression()
         {
-            var now = DateTime.UtcNow;
-            var objects = new[] { now }.Select(x => new
-            {
-                Value = x
-            }).AsQueryable();
-
             var options = new TestOptions
             {
                 Filters = new Dictionary<string, string>
                 {
-                    {"Value", "<=2020-01-01T12:30:00Z"}
+                    {"Date", "<=2020-01-01T12:30:00Z"}
                 }
             };
 
-            var list = QueryOptions.Filter(objects, options);
-
-            Assert.Contains("r.Value <= 1/01/2020 11:30:00 PM", list.Expression.ToString());
+            var list = QueryOptions.Filter(_items, options);
+            Assert.Contains("r.Date <= 1/01/2020 11:30:00 PM", list.Expression.ToString());
         }
     }
 }
