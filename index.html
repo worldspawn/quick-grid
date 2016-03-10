@@ -44,6 +44,92 @@
 </code></pre>
 
 <h2>
+<a id="filters" class="anchor" href="#filters" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Filters</h2>
+
+<h3>
+<a id="defining-a-filter" class="anchor" href="#defining-a-filter" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Defining a filter</h3>
+
+<p>You define a filter on the model, typically in the controller hosting the grid.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-smi">model</span>.<span class="pl-smi">search</span>.<span class="pl-en">addFilter</span>(<span class="pl-s"><span class="pl-pds">'</span>Company.Name<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>%<span class="pl-pds">'</span></span>);</pre></div>
+
+<p>That will add a filter targeting the Company.Name member expression. The <code>%</code> symbol indicates that this is a contains/like query. So if the value of the filter is <code>Acme</code> a linq expression will be applied as you had typed <code>queryable.Where(x =&gt; x.Company.Name.Contains("Acme"))</code>.</p>
+
+<h3>
+<a id="using-a-filter-in-your-html" class="anchor" href="#using-a-filter-in-your-html" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Using a filter in your html</h3>
+
+<p>There is nothing fancy about using a filter in your markup. Just have the ng-model target the filter's value field.</p>
+
+<div class="highlight highlight-text-html-basic"><pre>&lt;<span class="pl-ent">div</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>col-lg-4<span class="pl-pds">"</span></span>&gt;
+  &lt;<span class="pl-ent">div</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>form-group<span class="pl-pds">"</span></span>&gt;
+    &lt;<span class="pl-ent">label</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>control-label<span class="pl-pds">"</span></span>&gt;Company Name&lt;/<span class="pl-ent">label</span>&gt;
+    &lt;<span class="pl-ent">input</span> <span class="pl-e">type</span>=<span class="pl-s"><span class="pl-pds">"</span>text<span class="pl-pds">"</span></span> <span class="pl-e">maxlength</span>=<span class="pl-s"><span class="pl-pds">"</span>200<span class="pl-pds">"</span></span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>companyName<span class="pl-pds">"</span></span> <span class="pl-e">ng-model</span>=<span class="pl-s"><span class="pl-pds">"</span>ctrl.model.search.filters['Company.Name'].value<span class="pl-pds">"</span></span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>form-control<span class="pl-pds">"</span></span> <span class="pl-e">autocomplete</span>=<span class="pl-s"><span class="pl-pds">"</span>off<span class="pl-pds">"</span></span> /&gt;
+  &lt;/<span class="pl-ent">div</span>&gt;
+&lt;/<span class="pl-ent">div</span>&gt;</pre></div>
+
+<p>Remember the grid will react immediately to any change to the filter model. You can control that to some extent by using <code>ng-model-options</code>.</p>
+
+<h3>
+<a id="supported-filter-types" class="anchor" href="#supported-filter-types" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Supported Filter Types</h3>
+
+<table>
+<thead>
+<tr>
+<th>Operator</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>%</td>
+<td>Contains</td>
+<td>Matches any value that contains the filter value</td>
+</tr>
+<tr>
+<td>~%</td>
+<td>Stars With</td>
+<td>Matches any value that starts with the filter value</td>
+</tr>
+<tr>
+<td>%~</td>
+<td>Ends With</td>
+<td>Matches any value that ends with the filter value</td>
+</tr>
+<tr>
+<td>()</td>
+<td>Equals One Of</td>
+<td>Matches any value that exactly matches one the values in a set. This creates an expression like: <code>query.Where(x =&gt; new [] {"Cat", "Dog"}.Contains(x.AnimalType))</code>. Best used with a multipicker such a <code>select multiple="multiple"</code> element</td>
+</tr>
+<tr>
+<td>=</td>
+<td>Equals</td>
+<td>Matches any value that exactly matches the filter value</td>
+</tr>
+<tr>
+<td>&gt;</td>
+<td>Greater Than</td>
+<td></td>
+</tr>
+<tr>
+<td>&gt;=</td>
+<td>Greater Than or Equal</td>
+<td></td>
+</tr>
+<tr>
+<td>&lt;</td>
+<td>Less Than</td>
+<td></td>
+</tr>
+<tr>
+<td>&lt;=</td>
+<td>Less Than or Equal</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+<h2>
 <a id="examples" class="anchor" href="#examples" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Examples</h2>
 
 <p>Adding markup for use in your angular application. Quick grid automatically re queries whenever the model or filters are changed and sets the page index back to zero. The <em>model</em> is an arbitrary object; its members are sent to the server as part of the query request. Filters are structured query parameters that are automatically applied to the query and they are explained in more detail below.</p>
