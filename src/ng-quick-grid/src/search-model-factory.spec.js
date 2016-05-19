@@ -228,7 +228,7 @@
         model.search.addFilter('Name', '%', 'Fred');
         var queryString = model.search.toQueryString();
 
-        expect(queryString).toBe('filters[0].key=Foo&filters[0].value=%3DTest&filters[2].key=Name&filters[2].value=%25Fred%25&paging.pageIndex=&paging.sortBy=Name%20desc&paging.filterHash=');
+        expect(queryString).toBe('filters[0].key=Foo&filters[0].value=%3DTest&filters[2].key=Name&filters[2].value=%25Fred%25&paging.pageIndex=0&paging.sortBy=Name%20desc&paging.filterHash=');
       });
     });
 
