@@ -7,34 +7,41 @@ using System.Text.RegularExpressions;
 
 namespace QuickGrid
 {
+    public class PagingOptions
+    {
+        public int PageIndex { get; set; }
+        public int? PageSize { get; set; }
+        public string SortBy { get; set; }
+        public string FilterHash { get; set; }
+    }
+
     public class QueryOptions
     {
         protected QueryOptions()
         {
-            PageIndex = 0;
-            PageSize = null;
+            Paging = new PagingOptions();
+            Paging.PageIndex = 0;
+            Paging.PageSize = null;
         }
 
         protected QueryOptions(int pageSize, string defaultSortBy, params string[] allowedFilters)
         {
-            PageIndex = 0;
-            PageSize = pageSize;
-            SortBy = defaultSortBy;
+            Paging = new PagingOptions();
+            Paging.PageIndex = 0;
+            Paging.PageSize = pageSize;
+            Paging.SortBy = defaultSortBy;
             AllowedFilters = allowedFilters;
         }
 
         public IDictionary<string, string> Filters { get; set; } = new Dictionary<string, string>();
 
-        public string SortBy { get; set; }
         public string[] AllowedFilters { get; set; }
 
+        public PagingOptions Paging { get; set; }
         /// <summary>
         /// Zero based paging index
         /// </summary>
-        public int PageIndex { get; set; }
-        public int? PageSize { get; set; }
-        public string FilterHash { get; set; }
-
+        
         private static readonly Regex EqualsEx = new Regex("\\A\\!?\\=(.+)$", RegexOptions.Compiled);
         private static readonly Regex ContainsEx = new Regex("\\A\\!?(?=.*%)(\\%?)([^%]+)(\\%?)$", RegexOptions.Compiled);
         private static readonly Regex ContainsArrayEx = new Regex(@"\A\!?\((((?!\')(?<val>[^\)\'\,]+)(?<!\')\,?\s?)+|(('(?<val>[^\)\']+)')\,?\s?)+)\)$", RegexOptions.Compiled);
@@ -95,7 +102,7 @@ namespace QuickGrid
             {
                 type = sourceType.GenericTypeArguments[0];
             }
-            
+
             if (type.IsEnum)
             {
                 return Enum.Parse(type, value);
@@ -177,7 +184,7 @@ namespace QuickGrid
 
         public static IQueryable<T> Order<T>(IQueryable<T> list, QueryOptions options)
         {
-            if (options.SortBy == null)
+            if (options.Paging.SortBy == null)
             {
                 return list;
             }
@@ -185,7 +192,7 @@ namespace QuickGrid
             var param = Expression.Parameter(list.ElementType, "r");
             var thenMode = false;
 
-            foreach (var member in options.SortBy.Split(','))
+            foreach (var member in options.Paging.SortBy.Split(','))
             {
                 MemberExpression memberExpression = null;
                 var chop = member.Split(' ');

@@ -28,7 +28,7 @@
         element = $compile(element)(scope);
 
         function search(obj) {
-          if (obj.name === 'Foo' && !weAreDone) {
+          if (obj.model.name === 'Foo' && !weAreDone) {
             weAreDone = true;
             done();
           }
@@ -180,7 +180,7 @@
         expect(model.search.filters['Name'].value).toBe('Fred');
         model.search.filters['Name'].value = 'Foo';
         scope.$watch(function () {
-          return model.search.filterHash;
+          return model.search.paging.filterHash;
         }, function () {
           expect(model.search.pageCount.length).toBe(27);
           done();
@@ -219,6 +219,16 @@
         expect(model.search.filters['Name'].value).toBe('Fred');
         model.search.filters['Name'].value = 'Foo';
         scope.$digest();
+      });
+    });
+
+    it('should support serializing search model to uri querystring format', function () {
+      inject(function () {
+        model.search.addFilter('Foo', '=', 'Test');
+        model.search.addFilter('Name', '%', 'Fred');
+        var queryString = model.search.toQueryString();
+
+        expect(queryString).toBe('filters[0].key=Foo&filters[0].value=%3DTest&filters[2].key=Name&filters[2].value=%25Fred%25&paging.pageIndex=&paging.sortBy=Name%20desc&paging.filterHash=');
       });
     });
 

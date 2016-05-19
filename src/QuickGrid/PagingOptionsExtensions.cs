@@ -11,8 +11,8 @@ namespace QuickGrid
         {
             var result = new QueryResult<T>
             {
-                PageSize = queryOptions.PageSize,
-                PageIndex = queryOptions.PageIndex
+                PageSize = queryOptions.Paging.PageSize,
+                PageIndex = queryOptions.Paging.PageIndex
             };
 
             var filteredList = QueryOptions.Filter(list, queryOptions);
@@ -23,7 +23,7 @@ namespace QuickGrid
             var filterHash = Convert.ToBase64String(hasher.ComputeHash(Encoding.UTF8.GetBytes(filterAsString)));
             result.FilterHash = filterHash;
 
-            if (filterHash == queryOptions.FilterHash)
+            if (filterHash == queryOptions.Paging.FilterHash)
             {
                 result.Total = new Lazy<int?>(() => null);
             }
@@ -32,12 +32,12 @@ namespace QuickGrid
                 result.Total = new Lazy<int?>(() => orderedList.Count());
             }
 
-            if (queryOptions.PageSize.HasValue)
+            if (queryOptions.Paging.PageSize.HasValue)
             {
                 result.Results =
                     orderedList
-                        .Skip(queryOptions.PageIndex * queryOptions.PageSize.Value)
-                        .Take(queryOptions.PageSize.Value);
+                        .Skip(queryOptions.Paging.PageIndex * queryOptions.Paging.PageSize.Value)
+                        .Take(queryOptions.Paging.PageSize.Value);
             }
             else
             {
