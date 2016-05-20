@@ -184,7 +184,7 @@
   &lt;/<span class="pl-ent">tfoot</span>&gt;
 &lt;/<span class="pl-ent">table</span>&gt;</pre></div>
 
-<p>AngularJS example. This is an example controller that demonstrates creating a search model and binding it (<code>attachToScope</code>) to the search model so it re queries when a change is made.</p>
+<p>AngularJS example. This is an example controller that demonstrates creating a search model and binding it (<code>watch(scope)</code>) to the search model so it re queries when a change is made. You can instead of using watches, manually refresh the results to page 1 by calling <code>apply(true)</code> to execute the search query and return the paging to page 1 (sorting is not changed) or call <code>apply(false)</code> to execute the search query without changing the paging.</p>
 
 <div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> controller <span class="pl-k">=</span> [<span class="pl-s"><span class="pl-pds">'</span>SearchModel<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>$scope<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>$http<span class="pl-pds">'</span></span>,
   <span class="pl-k">function</span> (<span class="pl-smi">SearchModel</span>, <span class="pl-smi">$scope</span>, <span class="pl-smi">$http</span>) {
@@ -202,7 +202,7 @@
           <span class="pl-smi">model</span>.<span class="pl-smi">results</span> <span class="pl-k">=</span> <span class="pl-smi">xhr</span>.<span class="pl-c1">data</span>.<span class="pl-smi">results</span>;
           <span class="pl-k">return</span> <span class="pl-smi">xhr</span>.<span class="pl-c1">data</span>;
         })
-        .<span class="pl-en">catch</span>(<span class="pl-en">console</span>.error);
+        .<span class="pl-en">catch</span>(<span class="pl-en">console</span>.<span class="pl-smi">error</span>);
     }
 
     <span class="pl-smi">model</span>.<span class="pl-smi">search</span>.<span class="pl-en">attachToScope</span>($scope, search);
