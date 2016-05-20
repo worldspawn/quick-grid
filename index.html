@@ -130,9 +130,9 @@
 </table>
 
 <h4>
-<a id="coming-soon" class="anchor" href="#coming-soon" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Coming Soon</h4>
+<a id="not" class="anchor" href="#not" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Not</h4>
 
-<p>The <code>not</code> operator.</p>
+<p>You can return the inverse of the filter by calling <code>setNot(true|false)</code> on the filter. Or <code>toggleNot</code>. Eg: <code>model.search.filters['Company.Name'].setNot(true)</code></p>
 
 <h2>
 <a id="examples" class="anchor" href="#examples" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Examples</h2>
@@ -151,6 +151,12 @@
         &lt;/<span class="pl-ent">select</span>&gt;
       &lt;/<span class="pl-ent">div</span>&gt;
     &lt;/<span class="pl-ent">div</span>&gt;
+    &lt;<span class="pl-ent">div</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>col-lg-4<span class="pl-pds">"</span></span>&gt;
+        &lt;<span class="pl-ent">div</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>form-group<span class="pl-pds">"</span></span>&gt;
+          &lt;<span class="pl-ent">label</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>control-label<span class="pl-pds">"</span></span>&gt;Company Name&lt;/<span class="pl-ent">label</span>&gt;
+          &lt;<span class="pl-ent">input</span> <span class="pl-e">type</span>=<span class="pl-s"><span class="pl-pds">"</span>text<span class="pl-pds">"</span></span> <span class="pl-e">maxlength</span>=<span class="pl-s"><span class="pl-pds">"</span>200<span class="pl-pds">"</span></span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>companyName<span class="pl-pds">"</span></span> <span class="pl-e">ng-model</span>=<span class="pl-s"><span class="pl-pds">"</span>ctrl.model.search.filters['Company.Name'].value<span class="pl-pds">"</span></span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>form-control<span class="pl-pds">"</span></span> <span class="pl-e">autocomplete</span>=<span class="pl-s"><span class="pl-pds">"</span>off<span class="pl-pds">"</span></span> /&gt;
+        &lt;/<span class="pl-ent">div</span>&gt;
+      &lt;/<span class="pl-ent">div</span>&gt;
   &lt;/<span class="pl-ent">div</span>&gt;
 &lt;/<span class="pl-ent">form</span>&gt;</pre></div>
 
@@ -189,15 +195,14 @@
 <div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> controller <span class="pl-k">=</span> [<span class="pl-s"><span class="pl-pds">'</span>SearchModel<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>$scope<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>$http<span class="pl-pds">'</span></span>,
   <span class="pl-k">function</span> (<span class="pl-smi">SearchModel</span>, <span class="pl-smi">$scope</span>, <span class="pl-smi">$http</span>) {
     <span class="pl-k">var</span> model <span class="pl-k">=</span> {
-      search<span class="pl-k">:</span> <span class="pl-k">new</span> <span class="pl-en">SearchModel</span>(<span class="pl-s"><span class="pl-pds">'</span>ModifiedUtcDate desc<span class="pl-pds">'</span></span>),
+      search<span class="pl-k">:</span> <span class="pl-k">new</span> <span class="pl-en">SearchModel</span>(search, <span class="pl-s"><span class="pl-pds">'</span>Status desc<span class="pl-pds">'</span></span>),
       results<span class="pl-k">:</span> <span class="pl-c1">null</span>        
     };
 
     <span class="pl-v">this</span>.<span class="pl-smi">model</span> <span class="pl-k">=</span> model;
 
-    <span class="pl-k">function</span> <span class="pl-en">search</span> (<span class="pl-smi">searchModel</span>, <span class="pl-smi">paging</span>) {
-      <span class="pl-k">var</span> payload <span class="pl-k">=</span> <span class="pl-smi">angular</span>.<span class="pl-en">extend</span>({}, searchModel, paging);
-      <span class="pl-k">return</span> <span class="pl-smi">$http</span>.<span class="pl-en">get</span>(<span class="pl-s"><span class="pl-pds">'</span>/api/orders<span class="pl-pds">'</span></span>, { params<span class="pl-k">:</span> payload })
+    <span class="pl-k">function</span> <span class="pl-en">search</span> (<span class="pl-smi">searchModel</span>) {
+      <span class="pl-k">return</span> <span class="pl-smi">$http</span>.<span class="pl-en">get</span>(<span class="pl-s"><span class="pl-pds">'</span>/api/orders?<span class="pl-pds">'</span></span> <span class="pl-k">+</span> <span class="pl-smi">searchModel</span>.<span class="pl-en">toQueryString</span>(),)
         .<span class="pl-en">then</span>(<span class="pl-k">function</span> (<span class="pl-smi">xhr</span>) {
           <span class="pl-smi">model</span>.<span class="pl-smi">results</span> <span class="pl-k">=</span> <span class="pl-smi">xhr</span>.<span class="pl-c1">data</span>.<span class="pl-smi">results</span>;
           <span class="pl-k">return</span> <span class="pl-smi">xhr</span>.<span class="pl-c1">data</span>;
@@ -205,7 +210,7 @@
         .<span class="pl-en">catch</span>(<span class="pl-en">console</span>.<span class="pl-smi">error</span>);
     }
 
-    <span class="pl-smi">model</span>.<span class="pl-smi">search</span>.<span class="pl-en">attachToScope</span>($scope, search);
+    <span class="pl-smi">model</span>.<span class="pl-c1">watch</span>($scope);
   }];</pre></div>
 
 <p>The server side (csharp, webapi). This shows an example QueryOptions implementation. This example does not make use of filters, instead the properties are deserialized from the model sent from the client. How these are used is up the programmer, they have to manually apply them to the query.</p>
@@ -213,16 +218,11 @@
 <div class="highlight highlight-source-cs"><pre><span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">OrderListRequest</span> : <span class="pl-k">QueryOptions</span>
 {
     <span class="pl-k">public</span> <span class="pl-en">OrderListRequest</span>()
-        : <span class="pl-c1">base</span>(20, "ModifiedUtcDate desc")
+        : <span class="pl-c1">base</span>(20, "Status desc")
     {
     }
 
-    <span class="pl-k">public</span> OrderType? <span class="pl-en">Type</span> { <span class="pl-k">get</span>; <span class="pl-k">set</span>; }
-    <span class="pl-k">public</span> <span class="pl-k">string</span> <span class="pl-en">CompanyName</span> { <span class="pl-k">get</span>; <span class="pl-k">set</span>; }
-    <span class="pl-k">public</span> CompanyType? <span class="pl-en">CompanyType</span> { <span class="pl-k">get</span>; <span class="pl-k">set</span>; }
-    <span class="pl-k">public</span> <span class="pl-k">decimal</span> <span class="pl-en">Amount</span> { <span class="pl-k">get</span>; <span class="pl-k">set</span>; }
-    <span class="pl-k">public</span> <span class="pl-k">string</span> <span class="pl-en">EmailAddress</span> { <span class="pl-k">get</span>; <span class="pl-k">set</span>; }
-    <span class="pl-k">public</span> <span class="pl-k">string</span> <span class="pl-en">Status</span> { <span class="pl-k">get</span>; <span class="pl-k">set</span>; }
+    <span class="pl-k">public</span> OrderType? <span class="pl-en">Type</span> { <span class="pl-k">get</span>; <span class="pl-k">set</span>; }    
 }</pre></div>
 
 <p>This is an example route that shows how to make use of a request.</p>
@@ -256,6 +256,10 @@
     <span class="pl-k">var</span> result = request.Apply(query);
     <span class="pl-k">return</span> Ok(result);
 }</pre></div>
+
+<p>Values stored on your javascript search model (<code>search.model</code>) are moved up when transformed into json. There is <code>model</code> field in the json.</p>
+
+<p>See you do not have to implement the <code>Company.Name</code> filter except to ensure that it can be resolved in the final select expression of your query.</p>
 
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/kiandra-it/quick-grid">Quick-grid</a> is maintained by <a href="https://github.com/kiandra-it">kiandra-it</a>.</span>
