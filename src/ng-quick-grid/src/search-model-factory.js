@@ -185,11 +185,17 @@
       return segments.join('&');
     },
     toJSON: function () {
-      return {
-        model: this.model,
+      var result = {
         paging: this.paging,
         filters: this.filters
       };
+
+      Object.keys(this.model)
+        .forEach(function (key) {
+          result[key] = this.model[key];
+        });
+
+      return result;
     }
   };
 
