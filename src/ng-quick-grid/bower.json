@@ -5,7 +5,7 @@
     "Sam Critchley <critchley.sj@gmail.com>"
   ],
   "description": "quick-grid component",
-  "main": "test-data.min.js",
+  "main": "ng-quick-grid.min.js",
   "keywords": [
     "grid", "angular", "quick"
   ],

@@ -6,8 +6,8 @@
     <title>$title$</title>
     <authors>$author$</authors>
     <owners>$author$</owners>
-    <licenseUrl>https://raw.githubusercontent.com/kiandra-it/quick-grid/master/LICENSE.md</licenseUrl>
-    <projectUrl>http://github.com/kiandra-it/quick-grid</projectUrl>
+    <licenseUrl>https://raw.githubusercontent.com/worldspawn/quick-grid/master/LICENSE.md</licenseUrl>
+    <projectUrl>http://github.com/worldspawn/quick-grid</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <releaseNotes>Initial Release.</releaseNotes>
