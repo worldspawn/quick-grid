@@ -159,10 +159,10 @@
       var filterCount = 0;
       Object.keys(this.filters)
         .forEach(function (key) {
-          var name = 'filters[' + filterCount+++']';
           var value = this.filters[key].toJSON();
           if (value !== undefined) {
             var not = this.filters[key].not ? '!' : '';
+            var name = 'filters[' + filterCount+++']';
             segments.push(name + '.key=' + escape(key));
             segments.push(name + '.value=' + escape(not + value));
           }
