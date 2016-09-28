@@ -26,14 +26,14 @@
 <a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h2>
 
 <h3>
-<a id="bower" class="anchor" href="#bower" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Bower</h3>
+<a id="npm" class="anchor" href="#npm" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>NPM</h3>
 
 <p>To add support to your angular application install the bower package</p>
 
-<pre><code>bower install ng-quick-grid
+<pre><code>npm install ng-quick-grid
 </code></pre>
 
-<p>You should add the <code>ngQuickGrid</code> and <code>quick-grid-partials</code> modules to your application.</p>
+<p>You should add the <code>ngQuickGrid</code> module to your application.</p>
 
 <h3>
 <a id="nuget" class="anchor" href="#nuget" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Nuget</h3>
@@ -202,7 +202,7 @@
     <span class="pl-v">this</span>.<span class="pl-smi">model</span> <span class="pl-k">=</span> model;
 
     <span class="pl-k">function</span> <span class="pl-en">search</span> (<span class="pl-smi">searchModel</span>) {
-      <span class="pl-k">return</span> <span class="pl-smi">$http</span>.<span class="pl-en">get</span>(<span class="pl-s"><span class="pl-pds">'</span>/api/orders?<span class="pl-pds">'</span></span> <span class="pl-k">+</span> <span class="pl-smi">searchModel</span>.<span class="pl-en">toQueryString</span>(),)
+      <span class="pl-k">return</span> <span class="pl-smi">$http</span>.<span class="pl-c1">get</span>(<span class="pl-s"><span class="pl-pds">'</span>/api/orders?<span class="pl-pds">'</span></span> <span class="pl-k">+</span> <span class="pl-smi">searchModel</span>.<span class="pl-en">toQueryString</span>(),)
         .<span class="pl-en">then</span>(<span class="pl-k">function</span> (<span class="pl-smi">xhr</span>) {
           <span class="pl-smi">model</span>.<span class="pl-smi">results</span> <span class="pl-k">=</span> <span class="pl-smi">xhr</span>.<span class="pl-c1">data</span>.<span class="pl-smi">results</span>;
           <span class="pl-k">return</span> <span class="pl-smi">xhr</span>.<span class="pl-c1">data</span>;
