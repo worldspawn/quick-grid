@@ -168,6 +168,8 @@
 	    };
 	}
 	
+	directive.$inject = ['$compile'];
+	
 	exports.default = directive;
 
 /***/ },

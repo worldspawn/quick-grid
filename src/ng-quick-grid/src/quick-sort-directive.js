@@ -15,4 +15,6 @@ function directive($compile) {
     };
 }
 
+directive.$inject = ['$compile'];
+
 export default directive;
