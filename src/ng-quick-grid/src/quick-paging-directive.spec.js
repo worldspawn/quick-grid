@@ -1,10 +1,10 @@
-(function () {
-  /* globals describe, it, beforeEach, inject, expect, angular */
-  'use strict';
+import angular from 'angular';
+import 'angular-mocks';
+import app from './app.js'
 
-  describe('ngQuickGrid', function () {
+describe('ngQuickGrid', function () {
     var model;
-    beforeEach(module('ngQuickGrid'));
+    beforeEach(angular.mock.module('ngQuickGrid'));
     beforeEach(inject(function (SearchModel) {
       model = {
         search: new SearchModel('Name desc'),
@@ -28,5 +28,4 @@
         expect(footScope.quickPaging.searchModel).toEqual(scope.model.search);
       }));
     });
-  });
-})();
+   });

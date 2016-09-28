@@ -1,83 +1,109 @@
+var webpack = require('webpack');
 // Karma configuration
 // Generated on Sat Jan 17 2015 02:07:43 GMT+1100 (AUS Eastern Daylight Time)
 
 module.exports = function(config) {
-  'use strict';
+    'use strict';
 
-  config.set({
+    config.set({
 
-    // base path that will be used to resolve all patterns (eg. files, exclude)
-    basePath: '',
+        files: [
+            'test/test.js'
+        ],
 
-
-    // frameworks to use
-    // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['jasmine'],
-
-
-    // list of files / patterns to load in the browser
-    // files: [
-    //   'bower_components/angular/angular.js',
-    //   'bower_components/angular-mocks/angular-mocks.js',
-    //   'src/main.js',
-    //   'src/**/*.js'
-    // ],
+        // frameworks to use
+        // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
+        frameworks: ['jasmine'],
 
 
-    // list of files to exclude
-    exclude: [
-    ],
+
+        // test results reporter to use
+        // possible values: 'dots', 'progress'
+        // available reporters: https://npmjs.org/browse/keyword/karma-reporter
+        reporters: ['progress'],//, 'coverage'],
+
+        preprocessors: {
+            'test/test.js': ['webpack']
+        },
 
 
-    // preprocess matching files before serving them to the browser
-    // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
-    preprocessors: {
-      'src/**/!(*.spec|*.tpl).js': ['coverage']
-    },
+        // coverageReporter: {            
+        //     dir: 'build/coverage/',
+        //     reports: [
+        //         //{ type: 'html', subdir: 'html' },
+        //         //{ type: 'text-summary' },
+        //     ]
+
+        // },
+
+        webpack: {
+            // webpack configuration
+            module: {
+                loaders: [{
+                    test: /\.jsx?$/,
+                    exclude: /(node_modules|bower_components)/,
+                    loader: 'babel', // 'babel-loader' is also a legal name to reference
+                    query: {
+                        presets: ['es2015']
+                    }
+                }, {
+                    test: /\.html$/,
+                    loader: 'raw'
+                }],
+                // postLoaders: [{
+                //     test: /\.js/,
+                //     exclude: /(test|node_modules|bower_components)/,
+                //     loader: 'istanbul-instrumenter'
+                // }]
+            },
+            resolve: {
+                modulesDirectories: [
+                    "",
+                    "src",
+                    "node_modules"
+                ]
+            }
+        },
+
+        webpackMiddleware: {
+            // webpack-dev-middleware configuration
+            noInfo: true
+        },
 
 
-    // test results reporter to use
-    // possible values: 'dots', 'progress'
-    // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress', 'coverage'],
 
-    coverageReporter: {
-      reporters:[
-      {type: 'html'},
-      {type: 'text-summary'}
-      ]
-    },
+        plugins: [
+            require("karma-webpack"),
+            //require("istanbul-instrumenter-loader"),
+            require("karma-jasmine"),
+            require("karma-coverage"),
+            require("karma-phantomjs-launcher"),
+            require("karma-spec-reporter")
+        ],
 
-    plugins : [
-        'karma-phantomjs-launcher',
-        'karma-jasmine',
-        'karma-coverage'
-    ],
-
-    // web server port
-    port: 9876,
+        // web server port
+        port: 9876,
 
 
-    // enable / disable colors in the output (reporters and logs)
-    colors: true,
+        // enable / disable colors in the output (reporters and logs)
+        colors: true,
 
 
-    // level of logging
-    // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-    logLevel: config.LOG_INFO,
+        // level of logging
+        // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
+        logLevel: config.LOG_ERROR,
 
 
-    // enable / disable watching file and executing tests whenever any file changes
-    autoWatch: false,
+        // enable / disable watching file and executing tests whenever any file changes
+        autoWatch: false,
 
 
-    // start these browsers
-    // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['PhantomJS'],
+        browsers: ['PhantomJS'],
 
 
-    // Continuous Integration mode
-    // if true, Karma captures browsers, runs the tests and exits
-    singleRun: false
-  });
+        // Continuous Integration mode
+        // if true, Karma captures browsers, runs the tests and exits
+        singleRun: false
+            // available browser launcher
+    });
 };
