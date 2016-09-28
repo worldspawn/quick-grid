@@ -13,3 +13,4 @@ coverage
 .tmp
 *.tpl.js
 *ncrunch*
+npm-debug.log
