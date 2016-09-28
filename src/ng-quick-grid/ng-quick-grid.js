@@ -94,9 +94,9 @@
 	        restrict: 'A',
 	        scope: true,
 	        controllerAs: 'grid',
-	        controller: function controller($scope, $element, $attrs) {
+	        controller: ['$scope', '$element', '$attrs', function ($scope, $element, $attrs) {
 	            this.searchModel = $scope.$eval($attrs.gridModel);
-	        }
+	        }]
 	    };
 	}
 	
@@ -126,11 +126,11 @@
 	        scope: true,
 	        controllerAs: 'quickPaging',
 	        template: _quickGridFooter2.default,
-	        link: function link($scope, $element, $attrs, controllers) {
+	        link: ['$scope', '$element', '$attrs', 'controllers', function ($scope, $element, $attrs, controllers) {
 	            var quickGrid = controllers[0];
 	            var selfController = controllers[1];
 	            selfController.searchModel = quickGrid.searchModel;
-	        }
+	        }]
 	    };
 	}
 	
@@ -155,7 +155,7 @@
 	    return {
 	        restrict: 'A',
 	        require: '^quickGrid',
-	        link: function link($scope, $element, $attrs, quickGrid) {
+	        link: ['$scope', '$element', '$attrs', 'quickGrid', function ($scope, $element, $attrs, quickGrid) {
 	            var sortBy = $attrs.quickSort;
 	            var carets = angular.element('<span ng-if="grid.searchModel.paging.sortBy.toLowerCase().indexOf(\'' + sortBy.toLowerCase() + '\') === 0"><i class="glyphicon glyphicon-triangle-bottom" ng-if="grid.searchModel.paging.sortBy.toLowerCase().indexOf(\'desc\') > -1"></i><i class="glyphicon glyphicon-triangle-top" ng-if="grid.searchModel.paging.sortBy.toLowerCase().indexOf(\'desc\') === -1"></i></span>');
 	            $element.append($compile(carets)($scope));
@@ -164,7 +164,7 @@
 	                    quickGrid.searchModel.paging.sort(sortBy);
 	                });
 	            });
-	        }
+	        }]
 	    };
 	}
 	
