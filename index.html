@@ -67,7 +67,9 @@
   &lt;/<span class="pl-ent">div</span>&gt;
 &lt;/<span class="pl-ent">div</span>&gt;</pre></div>
 
-<p>Remember the grid will react immediately to any change to the filter model. You can control that to some extent by using <code>ng-model-options</code>.</p>
+<p>The grid will react immediately to any change to the filter model if it is set watch your model. <code>searchModel.watch($scope);</code></p>
+
+<p>Otherwise you can manually redraw the grid by calling <code>searchModel.apply()</code> when your page first loads or when a button is clicked. You can optionally pass <code>true</code> to reset the paging back to page 1. This also resets the filterhash which is a hash of the last filter applied. The .Net server side system uses the hash to avoid recalculating the total count of your result set on each paging call.</p>
 
 <h3>
 <a id="supported-filter-types" class="anchor" href="#supported-filter-types" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Supported Filter Types</h3>
