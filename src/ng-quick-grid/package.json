@@ -1,6 +1,6 @@
 {
   "name": "ng-quick-grid",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "angular light weight grid",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

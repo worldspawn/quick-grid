@@ -94,9 +94,9 @@
 	        restrict: 'A',
 	        scope: true,
 	        controllerAs: 'grid',
-	        controller: function controller($scope, $element, $attrs) {
+	        controller: ['$scope', '$element', '$attrs', function ($scope, $element, $attrs) {
 	            this.searchModel = $scope.$eval($attrs.gridModel);
-	        }
+	        }]
 	    };
 	}
 	

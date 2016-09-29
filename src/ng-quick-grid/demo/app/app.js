@@ -1,5 +1,5 @@
 import angular from 'angular';
-import './ng-quick-grid.js';
+import './ng-quick-grid.min.js';
 
 angular.module('app', ['ngQuickGrid'])
 .run(()=> {
