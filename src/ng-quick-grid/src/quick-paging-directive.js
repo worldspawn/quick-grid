@@ -8,11 +8,11 @@ function directive() {
         scope: true,
         controllerAs: 'quickPaging',
         template,
-        link: ['$scope', '$element', '$attrs', 'controllers', function($scope, $element, $attrs, controllers) {
+        link: function($scope, $element, $attrs, controllers) {
             var quickGrid = controllers[0];
             var selfController = controllers[1];
             selfController.searchModel = quickGrid.searchModel;
-        }]
+        }
     };
 }
 
