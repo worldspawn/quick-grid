@@ -1,3 +1,7 @@
+<div class="btn-group" ng-if="quickPaging.searchModel.pageCount.length > 1 && quickPaging.maxItems < quickPaging.searchModel.pageCount.length">
+	
+</div>
+
 <div class="btn-group" ng-if="quickPaging.searchModel.pageCount.length > 1">
   <button ng-repeat="x in quickPaging.searchModel.pageCount track by $index" ng-click="quickPaging.searchModel.paging.toPage($index)" ng-disabled="$index === quickPaging.searchModel.paging.pageIndex" class="btn btn-primary btn-sm">{{$index + 1}}</button>
 </div>

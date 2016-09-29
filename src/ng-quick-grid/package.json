@@ -1,6 +1,6 @@
 {
   "name": "ng-quick-grid",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "description": "angular light weight grid",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -35,5 +35,5 @@
     "angular": "^1.5.8"
   },
   "repository": "worldspawn/quick-grid",
-  "homepage": "http://worldspawn.github.io/quick-grid/g"
+  "homepage": "http://worldspawn.github.io/quick-grid/"
 }
