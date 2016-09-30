@@ -39,7 +39,7 @@ describe('ngQuickGrid', function () {
         //when reading this remember the page index is an 0 based index. the page number is not
         var td = element[0].querySelector('tfoot td');
         var footScope = angular.element(td).isolateScope();
-        model.search.paging.length = 20;
+        model.search.pageCount = Array(20);
         $rootScope.$digest();
 
         model.search.paging.pageIndex = 7;
@@ -58,6 +58,52 @@ describe('ngQuickGrid', function () {
         $rootScope.$digest();
         expect(footScope.quickPaging.drawMidRange.length).toBe(0);
         expect(footScope.quickPaging.drawStartRange[footScope.quickPaging.drawStartRange.length -1]).toBe(8);
+      }));
+
+      it ('should draw paging correctly', inject(function ($rootScope, $compile, $templateCache) {
+        var scope = $rootScope.$new();
+        scope.model = model;
+
+        var element = angular.element('<table quick-grid grid-model="model.search"><tfoot><tr><td colspan="6" class="text-center" quick-paging="15"></td></tr></tfoot></table>');
+        element = $compile(element)(scope);
+        $rootScope.$digest();
+        
+        //when reading this remember the page index is an 0 based index. the page number is not
+        var td = element[0].querySelector('tfoot td');
+        var footScope = angular.element(td).isolateScope();
+        model.search.pageCount = Array(20);
+        model.search.paging.pageIndex = 7;
+        $rootScope.$digest();
+        
+        expect(td.querySelectorAll('span.startRange button').length).toBe(6);
+        expect(td.querySelectorAll('span.midRange button').length).toBe(3);
+        expect(td.querySelectorAll('span.endRange button').length).toBe(6);
+        
+        model.search.paging.pageIndex = 10;
+        $rootScope.$digest();
+        expect(td.querySelectorAll('span.startRange button').length).toBe(6);
+        expect(td.querySelectorAll('span.midRange button').length).toBe(3);
+        expect(td.querySelectorAll('span.endRange button').length).toBe(6);
+
+
+        model.search.paging.pageIndex = 11;
+        $rootScope.$digest();
+        expect(td.querySelectorAll('span.startRange button').length).toBe(6);
+        expect(td.querySelectorAll('span.midRange button').length).toBe(3);
+        expect(td.querySelectorAll('span.endRange button').length).toBe(6);
+        
+        model.search.paging.pageIndex = 6;
+        $rootScope.$digest();
+
+        expect(td.querySelectorAll('span.startRange button').length).toBe(8);
+        expect(td.querySelectorAll('span.midRange button').length).toBe(0);
+        expect(td.querySelectorAll('span.endRange button').length).toBe(7);//end gets padded
+
+        model.search.paging.pageIndex = 13;
+        $rootScope.$digest();
+        expect(td.querySelectorAll('span.startRange button').length).toBe(7);
+        expect(td.querySelectorAll('span.midRange button').length).toBe(0);
+        expect(td.querySelectorAll('span.endRange button').length).toBe(8);
       }));
     });
    });

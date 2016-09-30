@@ -20,7 +20,7 @@ function directive() {
 
                 var pagingWatch;
 
-                pagingWatch = $scope.$watch(() => this.searchModel.paging.length, (newValue, oldValue) => {
+                pagingWatch = $scope.$watch(() => this.searchModel.pageCount.length, (newValue, oldValue) => {
                     if (newValue === oldValue) {
                         return;
                     }
@@ -77,6 +77,14 @@ function directive() {
                         this.drawStartRange.push(newValue);
                         this.drawStartRange.push(newValue + 1);
                         this.drawMidRange = [];
+
+                        var x = this.drawEndRange[0];
+                        var padAmount = this.maxItems - this.drawStartRange.length - this.drawEndRange.length;
+
+                        for (var i = 1; i <= padAmount; i++) {
+                            this.drawEndRange.unshift(x - i);
+                        }
+
                         return;
                     }
 
@@ -84,6 +92,14 @@ function directive() {
                         this.drawEndRange.unshift(newValue);
                         this.drawEndRange.unshift(newValue -1);
                         this.drawMidRange = [];
+
+                        var x = this.drawStartRange[this.drawStartRange.length - 1];
+                        var padAmount = this.maxItems - this.drawStartRange.length - this.drawEndRange.length;
+
+                        for (var i = 1; i <= padAmount; i++) {
+                            this.drawStartRange.push(x + i);
+                        }
+
                         return;
                     }
 

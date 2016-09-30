@@ -130,7 +130,6 @@ class SearchModel {
     }
 
     toQueryString() {
-        //note model is not output in the query string, i'd have to build a deep converter and i can't be arsed. just use filters! :P
         var segments = [];
         var filterCount = 0;
         Object.keys(this.filters)
@@ -201,7 +200,7 @@ class SearchModel {
 
     updatePaging(result) {
         if (result.pageCount !== null) {
-            this.pageCount.length = result.pageCount;
+            this.pageCount = Array(result.pageCount);
         }
 
         this.paging.filterHash = result.filterHash;

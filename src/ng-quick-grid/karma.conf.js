@@ -23,7 +23,7 @@ module.exports = function(config) {
         reporters: ['progress'],//, 'coverage'],
 
         preprocessors: {
-            'test/test.js': ['webpack']
+            'test/test.js': ['webpack', 'sourcemap']
         },
 
 
@@ -37,9 +37,10 @@ module.exports = function(config) {
         // },
 
         webpack: {
+            devtool: 'inline-source-map',
             // webpack configuration
             module: {
-                loaders: [{
+                preLoaders: [{
                     test: /\.jsx?$/,
                     exclude: /(node_modules|bower_components)/,
                     loader: 'babel', // 'babel-loader' is also a legal name to reference
@@ -50,6 +51,13 @@ module.exports = function(config) {
                     test: /\.html$/,
                     loader: 'raw'
                 }],
+                // loaders:[
+                //     {
+                //         test: /\.js$/,
+                //         exclude: /node_modules/,
+                //         loader: "source-map-loader"
+                //     }
+                // ]
                 // postLoaders: [{
                 //     test: /\.js/,
                 //     exclude: /(test|node_modules|bower_components)/,
@@ -78,7 +86,8 @@ module.exports = function(config) {
             require("karma-jasmine"),
             //require("karma-coverage"),
             require("karma-phantomjs-launcher"),
-            require("karma-spec-reporter")
+            require("karma-spec-reporter"),
+            require("karma-sourcemap-loader")
         ],
 
         // web server port
