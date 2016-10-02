@@ -94,6 +94,7 @@
 	        restrict: 'A',
 	        scope: true,
 	        controllerAs: 'grid',
+	        bindToController: true,
 	        controller: ['$scope', '$element', '$attrs', function ($scope, $element, $attrs) {
 	            this.searchModel = $scope.$eval($attrs.gridModel);
 	        }]
@@ -122,9 +123,124 @@
 	    return {
 	        restrict: 'A',
 	        require: ['^quickGrid', 'quickPaging'],
-	        controller: function controller() {},
-	        scope: true,
+	        controller: ['$scope', function ($scope) {
+	            var _this = this;
+	
+	            this.maxItems = this.maxItems || 10;
+	            this.startRange = [];
+	            this.endRange = [];
+	            this.midRange = [];
+	
+	            this.drawStartRange = [];
+	            this.drawMidRange = [];
+	            this.drawEndRange = [];
+	
+	            var initWatch = $scope.$watch(function () {
+	                return _this.searchModel;
+	            }, function (newValue, oldValue) {
+	                initWatch();
+	                initWatch = null;
+	
+	                var pagingWatch;
+	
+	                pagingWatch = $scope.$watch(function () {
+	                    return _this.searchModel.pageCount.length;
+	                }, function (newValue, oldValue) {
+	                    if (newValue === oldValue) {
+	                        return;
+	                    }
+	
+	                    if (newValue > _this.maxItems) {
+	                        _this.startRange = [];
+	                        _this.endRange = [];
+	                        var max = Math.floor((_this.maxItems - 3) / 2);
+	                        var i;
+	
+	                        for (i = 1; i <= max; i++) {
+	                            _this.startRange.push(i);
+	                        }
+	
+	                        var endStart = newValue;
+	
+	                        if (_this.maxItems % 2 === 0) {
+	                            var mid = newValue / 2;
+	                            _this.midRange = [mid - 2, mid - 1, mid];
+	                        } else {
+	                            var mid = newValue / 2;
+	                            if (mid % 1 == 0) {
+	                                _this.midRange = [mid - 1, mid, mid + 1];
+	                            } else {
+	                                _this.midRange = [mid - 0.5, mid + 0.5];
+	                            }
+	
+	                            endStart++;
+	                        }
+	
+	                        for (var i = endStart - max; i <= newValue; i++) {
+	                            _this.endRange.push(i);
+	                        }
+	                    }
+	                });
+	
+	                $scope.$watch(function () {
+	                    return _this.searchModel.paging.pageIndex;
+	                }, function (newValue, oldValue) {
+	                    if (newValue === oldValue) {
+	                        return;
+	                    }
+	
+	                    newValue = newValue + 1;
+	                    _this.drawStartRange = _this.startRange.slice(0);
+	                    _this.drawEndRange = _this.endRange.slice(0);
+	                    _this.drawMidRange = _this.midRange.slice(0);
+	
+	                    if (_this.drawStartRange.indexOf(newValue) > -1 || _this.drawEndRange.indexOf(newValue) > -1) {
+	                        return;
+	                    }
+	
+	                    if (_this.drawStartRange[_this.drawStartRange.length - 1] === newValue - 1) {
+	                        //ranges touch
+	                        _this.drawStartRange.push(newValue);
+	                        _this.drawStartRange.push(newValue + 1);
+	                        _this.drawMidRange = [];
+	
+	                        var x = _this.drawEndRange[0];
+	                        var padAmount = _this.maxItems - _this.drawStartRange.length - _this.drawEndRange.length;
+	
+	                        for (var i = 1; i <= padAmount; i++) {
+	                            _this.drawEndRange.unshift(x - i);
+	                        }
+	
+	                        return;
+	                    }
+	
+	                    if (_this.drawEndRange[0] === newValue + 1) {
+	                        //ranges touch
+	                        _this.drawEndRange.unshift(newValue);
+	                        _this.drawEndRange.unshift(newValue - 1);
+	                        _this.drawMidRange = [];
+	
+	                        var x = _this.drawStartRange[_this.drawStartRange.length - 1];
+	                        var padAmount = _this.maxItems - _this.drawStartRange.length - _this.drawEndRange.length;
+	
+	                        for (var i = 1; i <= padAmount; i++) {
+	                            _this.drawStartRange.push(x + i);
+	                        }
+	
+	                        return;
+	                    }
+	
+	                    if (_this.drawMidRange.indexOf(newValue) === -1) {
+	                        _this.drawMidRange = [newValue - 1, newValue, newValue + 1];
+	                    }
+	                });
+	            });
+	        }],
+	        scope: {
+	            maxItems: '<?quickPaging'
+	        },
 	        controllerAs: 'quickPaging',
+	        bindToController: true,
 	        template: _quickGridFooter2.default,
 	        link: function link($scope, $element, $attrs, controllers) {
 	            var quickGrid = controllers[0];
@@ -140,7 +256,7 @@
 /* 4 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"btn-group\" ng-if=\"quickPaging.searchModel.pageCount.length > 1\">\r\n  <button ng-repeat=\"x in quickPaging.searchModel.pageCount track by $index\" ng-click=\"quickPaging.searchModel.paging.toPage($index)\" ng-disabled=\"$index === quickPaging.searchModel.paging.pageIndex\" class=\"btn btn-primary btn-sm\">{{$index + 1}}</button>\r\n</div>\r\n"
+	module.exports = "<div class=\"btn-group\" ng-if=\"quickPaging.searchModel.pageCount.length > 1 && quickPaging.maxItems < quickPaging.searchModel.pageCount.length\">\r\n\t<button type=\"button\">&laquo;</button>\r\n\r\n\t<span class=\"startRange\">\r\n\t<button ng-repeat=\"x in quickPaging.drawStartRange track by $index\" ng-click=\"quickPaging.searchModel.paging.toPage(x-1)\" ng-disabled=\"(x+1) === quickPaging.searchModel.paging.pageIndex\" class=\"btn btn-primary btn-sm\">{{x}}</button>\r\n\t</span>\r\n\t<span>...</span>\r\n\t<span class=\"midRange\" ng-if=\"quickPaging.drawMidRange.length > 0\">\r\n\t<button ng-repeat=\"x in quickPaging.drawMidRange track by $index\" ng-click=\"quickPaging.searchModel.paging.toPage(x-1)\" ng-disabled=\"(x+1) === quickPaging.searchModel.paging.pageIndex\" class=\"btn btn-primary btn-sm\">{{x}}</button>\r\n\t</span>\r\n\t<span ng-if=\"quickPaging.drawMidRange.length > 0\">...</span>\r\n\t<span class=\"endRange\" ng-if=\"quickPaging.drawEndRange.length > 0\">\r\n\t<button ng-repeat=\"x in quickPaging.drawEndRange track by $index\" ng-click=\"quickPaging.searchModel.paging.toPage(x-1)\" ng-disabled=\"(x+1) === quickPaging.searchModel.paging.pageIndex\" class=\"btn btn-primary btn-sm\">{{x}}</button>\r\n\t</span>\r\n\t<button type=\"button\">&raquo;</button>\r\n</div>\r\n\r\n<div class=\"btn-group\" ng-if=\"quickPaging.searchModel.pageCount.length > 1 && quickPaging.maxItems >= quickPaging.searchModel.pageCount.length\">\r\n  <button ng-repeat=\"x in quickPaging.searchModel.pageCount track by $index\" ng-click=\"quickPaging.searchModel.paging.toPage($index)\" ng-disabled=\"$index === quickPaging.searchModel.paging.pageIndex\" class=\"btn btn-primary btn-sm\">{{$index + 1}}</button>\r\n</div>\r\n"
 
 /***/ },
 /* 5 */
@@ -342,7 +458,6 @@
 	        value: function toQueryString() {
 	            var _this = this;
 	
-	            //note model is not output in the query string, i'd have to build a deep converter and i can't be arsed. just use filters! :P
 	            var segments = [];
 	            var filterCount = 0;
 	            Object.keys(this.filters).forEach(function (key) {
@@ -357,7 +472,10 @@
 	
 	            if (this.model) {
 	                Object.keys(this.model).forEach(function (key) {
-	                    var value = _this.model[key].toJSON();
+	                    var value = _this.model[key];
+	                    if (value.toJSON) {
+	                        value = value.toJSON();
+	                    }
 	                    if (value !== undefined) {
 	                        segments.push(escape(key) + '=' + escape(value));
 	                    }
@@ -419,7 +537,7 @@
 	        key: 'updatePaging',
 	        value: function updatePaging(result) {
 	            if (result.pageCount !== null) {
-	                this.pageCount.length = result.pageCount;
+	                this.pageCount = Array(result.pageCount);
 	            }
 	
 	            this.paging.filterHash = result.filterHash;
