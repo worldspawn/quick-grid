@@ -1,3 +1,20 @@
-<div class="btn-group" ng-if="quickPaging.searchModel.pageCount.length > 1">
+<div class="btn-group" ng-if="quickPaging.searchModel.pageCount.length > 1 && quickPaging.maxItems < quickPaging.searchModel.pageCount.length">
+	<button type="button">&laquo;</button>
+
+	<span class="startRange">
+	<button ng-repeat="x in quickPaging.drawStartRange track by $index" ng-click="quickPaging.searchModel.paging.toPage(x-1)" ng-disabled="(x+1) === quickPaging.searchModel.paging.pageIndex" class="btn btn-primary btn-sm">{{x}}</button>
+	</span>
+	<span>...</span>
+	<span class="midRange" ng-if="quickPaging.drawMidRange.length > 0">
+	<button ng-repeat="x in quickPaging.drawMidRange track by $index" ng-click="quickPaging.searchModel.paging.toPage(x-1)" ng-disabled="(x+1) === quickPaging.searchModel.paging.pageIndex" class="btn btn-primary btn-sm">{{x}}</button>
+	</span>
+	<span ng-if="quickPaging.drawMidRange.length > 0">...</span>
+	<span class="endRange" ng-if="quickPaging.drawEndRange.length > 0">
+	<button ng-repeat="x in quickPaging.drawEndRange track by $index" ng-click="quickPaging.searchModel.paging.toPage(x-1)" ng-disabled="(x+1) === quickPaging.searchModel.paging.pageIndex" class="btn btn-primary btn-sm">{{x}}</button>
+	</span>
+	<button type="button">&raquo;</button>
+</div>
+
+<div class="btn-group" ng-if="quickPaging.searchModel.pageCount.length > 1 && quickPaging.maxItems >= quickPaging.searchModel.pageCount.length">
   <button ng-repeat="x in quickPaging.searchModel.pageCount track by $index" ng-click="quickPaging.searchModel.paging.toPage($index)" ng-disabled="$index === quickPaging.searchModel.paging.pageIndex" class="btn btn-primary btn-sm">{{$index + 1}}</button>
 </div>

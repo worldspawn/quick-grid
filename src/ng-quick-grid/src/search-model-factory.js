@@ -109,11 +109,13 @@ class SearchModel {
         this.attachPagingWatch();
         return this;
     }
+
     addFilter(key, operator, value) {
         var Constructor = operators[operator] || PrefixOperator;
         this.filters[key] = new Constructor(value, operator);
         return this;
     }
+
     apply(reset) {
         if (this.pagingWatchHandle) {
             this.pagingWatchHandle();
@@ -126,8 +128,8 @@ class SearchModel {
             .then(this.updatePaging.bind(this))
             .then(this.attachPagingWatch.bind(this));
     }
+
     toQueryString() {
-        //note model is not output in the query string, i'd have to build a deep converter and i can't be arsed. just use filters! :P
         var segments = [];
         var filterCount = 0;
         Object.keys(this.filters)
@@ -144,7 +146,10 @@ class SearchModel {
         if (this.model) {
             Object.keys(this.model)
                 .forEach((key) => {
-                    var value = this.model[key].toJSON();
+                    var value = this.model[key];
+                    if (value.toJSON) {
+                        value = value.toJSON();
+                    }
                     if (value !== undefined) {
                         segments.push(escape(key) + '=' + escape(value));
                     }
@@ -195,7 +200,7 @@ class SearchModel {
 
     updatePaging(result) {
         if (result.pageCount !== null) {
-            this.pageCount.length = result.pageCount;
+            this.pageCount = Array(result.pageCount);
         }
 
         this.paging.filterHash = result.filterHash;
