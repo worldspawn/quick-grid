@@ -256,7 +256,7 @@
 /* 4 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"btn-group\" ng-if=\"quickPaging.searchModel.pageCount.length > 1 && quickPaging.maxItems < quickPaging.searchModel.pageCount.length\">\r\n\t<button type=\"button\">&laquo;</button>\r\n\r\n\t<span class=\"startRange\">\r\n\t<button ng-repeat=\"x in quickPaging.drawStartRange track by $index\" ng-click=\"quickPaging.searchModel.paging.toPage(x-1)\" ng-disabled=\"(x+1) === quickPaging.searchModel.paging.pageIndex\" class=\"btn btn-primary btn-sm\">{{x}}</button>\r\n\t</span>\r\n\t<span>...</span>\r\n\t<span class=\"midRange\" ng-if=\"quickPaging.drawMidRange.length > 0\">\r\n\t<button ng-repeat=\"x in quickPaging.drawMidRange track by $index\" ng-click=\"quickPaging.searchModel.paging.toPage(x-1)\" ng-disabled=\"(x+1) === quickPaging.searchModel.paging.pageIndex\" class=\"btn btn-primary btn-sm\">{{x}}</button>\r\n\t</span>\r\n\t<span ng-if=\"quickPaging.drawMidRange.length > 0\">...</span>\r\n\t<span class=\"endRange\" ng-if=\"quickPaging.drawEndRange.length > 0\">\r\n\t<button ng-repeat=\"x in quickPaging.drawEndRange track by $index\" ng-click=\"quickPaging.searchModel.paging.toPage(x-1)\" ng-disabled=\"(x+1) === quickPaging.searchModel.paging.pageIndex\" class=\"btn btn-primary btn-sm\">{{x}}</button>\r\n\t</span>\r\n\t<button type=\"button\">&raquo;</button>\r\n</div>\r\n\r\n<div class=\"btn-group\" ng-if=\"quickPaging.searchModel.pageCount.length > 1 && quickPaging.maxItems >= quickPaging.searchModel.pageCount.length\">\r\n  <button ng-repeat=\"x in quickPaging.searchModel.pageCount track by $index\" ng-click=\"quickPaging.searchModel.paging.toPage($index)\" ng-disabled=\"$index === quickPaging.searchModel.paging.pageIndex\" class=\"btn btn-primary btn-sm\">{{$index + 1}}</button>\r\n</div>\r\n"
+	module.exports = "<div class=\"btn-group\" ng-if=\"quickPaging.searchModel.pageCount.length > 1 && quickPaging.maxItems < quickPaging.searchModel.pageCount.length\">\r\n\t<button type=\"button\" class=\"btn btn-primary btn-sm\">&laquo;</button>\r\n\r\n\t<span class=\"startRange\">\r\n\t<button ng-repeat=\"x in quickPaging.drawStartRange track by $index\" ng-click=\"quickPaging.searchModel.paging.toPage(x-1)\" ng-disabled=\"(x+1) === quickPaging.searchModel.paging.pageIndex\" class=\"btn btn-primary btn-sm\">{{x}}</button>\r\n\t</span>\r\n\t<span>...</span>\r\n\t<span class=\"midRange\" ng-if=\"quickPaging.drawMidRange.length > 0\">\r\n\t<button ng-repeat=\"x in quickPaging.drawMidRange track by $index\" ng-click=\"quickPaging.searchModel.paging.toPage(x-1)\" ng-disabled=\"(x+1) === quickPaging.searchModel.paging.pageIndex\" class=\"btn btn-primary btn-sm\">{{x}}</button>\r\n\t</span>\r\n\t<span ng-if=\"quickPaging.drawMidRange.length > 0\">...</span>\r\n\t<span class=\"endRange\" ng-if=\"quickPaging.drawEndRange.length > 0\">\r\n\t<button ng-repeat=\"x in quickPaging.drawEndRange track by $index\" ng-click=\"quickPaging.searchModel.paging.toPage(x-1)\" ng-disabled=\"(x+1) === quickPaging.searchModel.paging.pageIndex\" class=\"btn btn-primary btn-sm\">{{x}}</button>\r\n\t</span>\r\n\t<button type=\"button\" class=\"btn btn-primary btn-sm\">&raquo;</button>\r\n</div>\r\n\r\n<div class=\"btn-group\" ng-if=\"quickPaging.searchModel.pageCount.length > 1 && quickPaging.maxItems >= quickPaging.searchModel.pageCount.length\">\r\n  <button ng-repeat=\"x in quickPaging.searchModel.pageCount track by $index\" ng-click=\"quickPaging.searchModel.paging.toPage($index)\" ng-disabled=\"$index === quickPaging.searchModel.paging.pageIndex\" class=\"btn btn-primary btn-sm\">{{$index + 1}}</button>\r\n</div>\r\n"
 
 /***/ },
 /* 5 */
@@ -473,10 +473,11 @@
 	            if (this.model) {
 	                Object.keys(this.model).forEach(function (key) {
 	                    var value = _this.model[key];
-	                    if (value.toJSON) {
-	                        value = value.toJSON();
-	                    }
-	                    if (value !== undefined) {
+	                    if (value !== undefined && value !== null) {
+	                        if (value.toJSON) {
+	                            value = value.toJSON();
+	                        }
+	
 	                        segments.push(escape(key) + '=' + escape(value));
 	                    }
 	                });
