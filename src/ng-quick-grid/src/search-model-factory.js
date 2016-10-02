@@ -147,12 +147,13 @@ class SearchModel {
             Object.keys(this.model)
                 .forEach((key) => {
                     var value = this.model[key];
-                    if (value.toJSON) {
-                        value = value.toJSON();
-                    }
-                    if (value !== undefined) {
-                        segments.push(escape(key) + '=' + escape(value));
-                    }
+					if (value !== undefined && value !== null) {				
+						if (value.toJSON) {
+							value = value.toJSON();
+						}
+						
+						segments.push(escape(key) + '=' + escape(value));
+					}
                 });
         }
 
