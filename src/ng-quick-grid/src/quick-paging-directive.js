@@ -39,15 +39,21 @@ function directive() {
                         
                         if (this.maxItems % 2 === 0) {
                             var mid = newValue / 2;
-                            this.midRange = [mid -2, mid -1, mid];
-                        }
-                        else {
-                            var mid = newValue / 2;
                             if (mid % 1 == 0) {
                                 this.midRange = [mid -1, mid, mid +1];
                             }
                             else {
-                                this.midRange = [mid -0.5, mid +0.5];
+                                this.midRange = [mid -1.5, mid -0.5, mid +0.5];
+                            }
+                        }
+                        else {
+                            var mid = newValue / 2;
+                            
+                            if (mid % 1 == 0) {
+                                this.midRange = [mid -1, mid, mid +1];
+                            }
+                            else {
+                                this.midRange = [mid -1.5, mid -0.5, mid +0.5];
                             }
 
                             endStart++;
@@ -60,10 +66,6 @@ function directive() {
                 });
 
                 $scope.$watch(() => this.searchModel.paging.pageIndex, (newValue, oldValue) => {
-                    if (newValue === oldValue) {
-                        return;
-                    }
-
                     newValue = newValue +1;
                     this.drawStartRange = this.startRange.slice(0);
                     this.drawEndRange = this.endRange.slice(0);

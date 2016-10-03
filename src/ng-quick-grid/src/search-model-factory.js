@@ -123,12 +123,17 @@ class SearchModel {
         if (this.pagingWatchHandle) {
             this.pagingWatchHandle();
         }
-                
-        if (reset) {
-            this.paging.pageIndex = 0;
+        if (reset) {            
             this.paging.filterHash = null;
         }
         this.callback(this)
+            .then((response)=> {
+                if (reset) {
+                    this.paging.pageIndex = 0;
+                }
+
+                return response;
+            })
             .then(this.updatePaging.bind(this))
             .then(this.attachPagingWatch.bind(this));
     }
