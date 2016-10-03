@@ -256,7 +256,7 @@
 /* 4 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"btn-group\" ng-if=\"quickPaging.searchModel.pageCount.length > 1 && quickPaging.maxItems < quickPaging.searchModel.pageCount.length\">\r\n\t<button type=\"button\" class=\"btn btn-primary btn-sm\">&laquo;</button>\r\n\r\n\t<span class=\"startRange\">\r\n\t<button ng-repeat=\"x in quickPaging.drawStartRange track by $index\" ng-click=\"quickPaging.searchModel.paging.toPage(x-1)\" ng-disabled=\"(x+1) === quickPaging.searchModel.paging.pageIndex\" class=\"btn btn-primary btn-sm\">{{x}}</button>\r\n\t</span>\r\n\t<span>...</span>\r\n\t<span class=\"midRange\" ng-if=\"quickPaging.drawMidRange.length > 0\">\r\n\t<button ng-repeat=\"x in quickPaging.drawMidRange track by $index\" ng-click=\"quickPaging.searchModel.paging.toPage(x-1)\" ng-disabled=\"(x+1) === quickPaging.searchModel.paging.pageIndex\" class=\"btn btn-primary btn-sm\">{{x}}</button>\r\n\t</span>\r\n\t<span ng-if=\"quickPaging.drawMidRange.length > 0\">...</span>\r\n\t<span class=\"endRange\" ng-if=\"quickPaging.drawEndRange.length > 0\">\r\n\t<button ng-repeat=\"x in quickPaging.drawEndRange track by $index\" ng-click=\"quickPaging.searchModel.paging.toPage(x-1)\" ng-disabled=\"(x+1) === quickPaging.searchModel.paging.pageIndex\" class=\"btn btn-primary btn-sm\">{{x}}</button>\r\n\t</span>\r\n\t<button type=\"button\" class=\"btn btn-primary btn-sm\">&raquo;</button>\r\n</div>\r\n\r\n<div class=\"btn-group\" ng-if=\"quickPaging.searchModel.pageCount.length > 1 && quickPaging.maxItems >= quickPaging.searchModel.pageCount.length\">\r\n  <button ng-repeat=\"x in quickPaging.searchModel.pageCount track by $index\" ng-click=\"quickPaging.searchModel.paging.toPage($index)\" ng-disabled=\"$index === quickPaging.searchModel.paging.pageIndex\" class=\"btn btn-primary btn-sm\">{{$index + 1}}</button>\r\n</div>\r\n"
+	module.exports = "<nav ng-if=\"quickPaging.searchModel.pageCount.length > 1 && quickPaging.maxItems < quickPaging.searchModel.pageCount.length\">\r\n\t<button type=\"button\" class=\"btn btn-primary btn-sm\" ng-click=\"quickPaging.searchModel.paging.toPage(quickPaging.searchModel.paging.pageIndex - 1)\" ng-disabled=\"0 === quickPaging.searchModel.paging.pageIndex\">&laquo;</button>\r\n    <div class=\"btn-group startRange\">\r\n    \t<button ng-repeat=\"x in quickPaging.drawStartRange track by $index\" ng-click=\"quickPaging.searchModel.paging.toPage(x-1)\" ng-class=\"{'btn-primary' :(x-1) === quickPaging.searchModel.paging.pageIndex}\" class=\"btn btn-sm\">{{x}}</button>\r\n    </div>\r\n    <span>...</span>\r\n    <div class=\"btn-group midRange\" ng-if=\"quickPaging.drawMidRange.length > 0\">\r\n        <button ng-repeat=\"x in quickPaging.drawMidRange track by $index\" ng-click=\"quickPaging.searchModel.paging.toPage(x-1)\" ng-class=\"{'btn-primary' :(x-1) === quickPaging.searchModel.paging.pageIndex}\" class=\"btn btn-sm\">{{x}}</button>\r\n\t</div>\r\n\t<span ng-if=\"quickPaging.drawMidRange.length > 0\">...</span>\r\n\t<div class=\"btn-group endRange\" ng-if=\"quickPaging.drawEndRange.length > 0\">\r\n\t<button ng-repeat=\"x in quickPaging.drawEndRange track by $index\" ng-click=\"quickPaging.searchModel.paging.toPage(x-1)\" ng-class=\"{'btn-primary' :(x-1) === quickPaging.searchModel.paging.pageIndex}\" class=\"btn btn-sm\">{{x}}</button>\r\n\t</div>\r\n\t<button type=\"button\" class=\"btn btn-primary btn-sm\" ng-click=\"quickPaging.searchModel.paging.toPage(quickPaging.searchModel.paging.pageIndex + 1)\" ng-disabled=\"(quickPaging.searchModel.pageCount.length - 1) === quickPaging.searchModel.paging.pageIndex\">&raquo;</button>\r\n</nav>\r\n\r\n<div class=\"btn-group\" ng-if=\"quickPaging.searchModel.pageCount.length > 1 && quickPaging.maxItems >= quickPaging.searchModel.pageCount.length\">\r\n  <button ng-repeat=\"x in quickPaging.searchModel.pageCount track by $index\" ng-click=\"quickPaging.searchModel.paging.toPage($index)\" ng-disabled=\"$index === quickPaging.searchModel.paging.pageIndex\" class=\"btn btn-primary btn-sm\">{{$index + 1}}</button>\r\n</div>\r\n\r\n"
 
 /***/ },
 /* 5 */
@@ -408,6 +408,9 @@
 	    }, {
 	        key: 'toPage',
 	        value: function toPage(pageIndex) {
+	            if (pageIndex < 0) {
+	                return;
+	            }
 	            this.pageIndex = pageIndex;
 	        }
 	    }]);
@@ -447,6 +450,7 @@
 	            if (this.pagingWatchHandle) {
 	                this.pagingWatchHandle();
 	            }
+	
 	            if (reset) {
 	                this.paging.pageIndex = 0;
 	                this.paging.filterHash = null;
@@ -454,16 +458,40 @@
 	            this.callback(this).then(this.updatePaging.bind(this)).then(this.attachPagingWatch.bind(this));
 	        }
 	    }, {
+	        key: 'reset',
+	        value: function reset() {
+	            var _this = this;
+	
+	            if (this.modelWatchHandler) {
+	                this.modelWatchHandler();
+	            }
+	
+	            if (this.filterWatchHandle) {
+	                this.filterWatchHandle();
+	            }
+	
+	            Object.keys(this.filters).forEach(function (key) {
+	                return _this.filters[key].value = undefined;
+	            });
+	            Object.keys(this.model).forEach(function (key) {
+	                return _this.model[key] = undefined;
+	            });
+	
+	            this.attachOtherWatchers();
+	
+	            this.apply(true);
+	        }
+	    }, {
 	        key: 'toQueryString',
 	        value: function toQueryString() {
-	            var _this = this;
+	            var _this2 = this;
 	
 	            var segments = [];
 	            var filterCount = 0;
 	            Object.keys(this.filters).forEach(function (key) {
-	                var value = _this.filters[key].toJSON();
+	                var value = _this2.filters[key].toJSON();
 	                if (value !== undefined) {
-	                    var not = _this.filters[key].not ? '!' : '';
+	                    var not = _this2.filters[key].not ? '!' : '';
 	                    var name = 'filters[' + filterCount++ + ']';
 	                    segments.push(name + '.key=' + escape(key));
 	                    segments.push(name + '.value=' + escape(not + value));
@@ -472,7 +500,7 @@
 	
 	            if (this.model) {
 	                Object.keys(this.model).forEach(function (key) {
-	                    var value = _this.model[key];
+	                    var value = _this2.model[key];
 	                    if (value !== undefined && value !== null) {
 	                        if (value.toJSON) {
 	                            value = value.toJSON();
@@ -492,7 +520,7 @@
 	    }, {
 	        key: 'toJSON',
 	        value: function toJSON() {
-	            var _this2 = this;
+	            var _this3 = this;
 	
 	            var result = {
 	                paging: this.paging,
@@ -500,7 +528,7 @@
 	            };
 	
 	            Object.keys(this.model).forEach(function (key) {
-	                result[key] = _this2.model[key];
+	                result[key] = _this3.model[key];
 	            });
 	
 	            return result;
@@ -508,29 +536,29 @@
 	    }, {
 	        key: 'attachOtherWatchers',
 	        value: function attachOtherWatchers() {
-	            var _this3 = this;
+	            var _this4 = this;
 	
 	            this.modelWatchHandle = this.scope.$watch(function () {
-	                return _this3.model;
+	                return _this4.model;
 	            }, this.onChange.bind(this), true);
 	
 	            this.filterWatchHandle = this.scope.$watch(function () {
-	                return _this3.filters;
+	                return _this4.filters;
 	            }, this.onChange.bind(this), true);
 	        }
 	    }, {
 	        key: 'attachPagingWatch',
 	        value: function attachPagingWatch() {
-	            var _this4 = this;
+	            var _this5 = this;
 	
 	            if (!this.scope) {
 	                return;
 	            }
 	            this.pagingWatchHandle = this.scope.$watch(function () {
-	                return _this4.paging;
+	                return _this5.paging;
 	            }, function (newValue, oldValue) {
 	                if (newValue.sortBy !== oldValue.sortBy || newValue.pageIndex !== oldValue.pageIndex) {
-	                    _this4.apply(false);
+	                    _this5.apply(false);
 	                }
 	            }, true);
 	        }

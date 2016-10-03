@@ -90,6 +90,9 @@ class PagingModel {
     }
 
     toPage(pageIndex) {
+        if(pageIndex < 0){
+            return;
+        }
         this.pageIndex = pageIndex;
     }
 }
@@ -120,6 +123,7 @@ class SearchModel {
         if (this.pagingWatchHandle) {
             this.pagingWatchHandle();
         }
+                
         if (reset) {
             this.paging.pageIndex = 0;
             this.paging.filterHash = null;
@@ -128,6 +132,24 @@ class SearchModel {
             .then(this.updatePaging.bind(this))
             .then(this.attachPagingWatch.bind(this));
     }
+    
+    reset() {
+        if(this.modelWatchHandler) {
+            this.modelWatchHandler();
+        }
+        
+        if(this.filterWatchHandle) {
+            this.filterWatchHandle();
+        }
+        
+        Object.keys(this.filters).forEach((key) => this.filters[key].value = undefined);
+        Object.keys(this.model).forEach((key) => this.model[key] = undefined);
+        
+        this.attachOtherWatchers();
+       
+        this.apply(true);
+    }
+        
 
     toQueryString() {
         var segments = [];
