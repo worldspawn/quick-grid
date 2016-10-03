@@ -409,6 +409,9 @@
 	    }, {
 	        key: 'toPage',
 	        value: function toPage(pageIndex) {
+	            if (pageIndex < 0) {
+	                return;
+	            }
 	            this.pageIndex = pageIndex;
 	        }
 	    }]);
@@ -462,16 +465,40 @@
 	            }).then(this.updatePaging.bind(this)).then(this.attachPagingWatch.bind(this));
 	        }
 	    }, {
+	        key: 'reset',
+	        value: function reset() {
+	            var _this2 = this;
+	
+	            if (this.modelWatchHandler) {
+	                this.modelWatchHandler();
+	            }
+	
+	            if (this.filterWatchHandle) {
+	                this.filterWatchHandle();
+	            }
+	
+	            Object.keys(this.filters).forEach(function (key) {
+	                return _this2.filters[key].value = undefined;
+	            });
+	            Object.keys(this.model).forEach(function (key) {
+	                return _this2.model[key] = undefined;
+	            });
+	
+	            this.attachOtherWatchers();
+	
+	            this.apply(true);
+	        }
+	    }, {
 	        key: 'toQueryString',
 	        value: function toQueryString() {
-	            var _this2 = this;
+	            var _this3 = this;
 	
 	            var segments = [];
 	            var filterCount = 0;
 	            Object.keys(this.filters).forEach(function (key) {
-	                var value = _this2.filters[key].toJSON();
+	                var value = _this3.filters[key].toJSON();
 	                if (value !== undefined) {
-	                    var not = _this2.filters[key].not ? '!' : '';
+	                    var not = _this3.filters[key].not ? '!' : '';
 	                    var name = 'filters[' + filterCount++ + ']';
 	                    segments.push(name + '.key=' + escape(key));
 	                    segments.push(name + '.value=' + escape(not + value));
@@ -480,7 +507,7 @@
 	
 	            if (this.model) {
 	                Object.keys(this.model).forEach(function (key) {
-	                    var value = _this2.model[key];
+	                    var value = _this3.model[key];
 	                    if (value !== undefined && value !== null) {
 	                        if (value.toJSON) {
 	                            value = value.toJSON();
@@ -500,7 +527,7 @@
 	    }, {
 	        key: 'toJSON',
 	        value: function toJSON() {
-	            var _this3 = this;
+	            var _this4 = this;
 	
 	            var result = {
 	                paging: this.paging,
@@ -508,7 +535,7 @@
 	            };
 	
 	            Object.keys(this.model).forEach(function (key) {
-	                result[key] = _this3.model[key];
+	                result[key] = _this4.model[key];
 	            });
 	
 	            return result;
@@ -516,29 +543,29 @@
 	    }, {
 	        key: 'attachOtherWatchers',
 	        value: function attachOtherWatchers() {
-	            var _this4 = this;
+	            var _this5 = this;
 	
 	            this.modelWatchHandle = this.scope.$watch(function () {
-	                return _this4.model;
+	                return _this5.model;
 	            }, this.onChange.bind(this), true);
 	
 	            this.filterWatchHandle = this.scope.$watch(function () {
-	                return _this4.filters;
+	                return _this5.filters;
 	            }, this.onChange.bind(this), true);
 	        }
 	    }, {
 	        key: 'attachPagingWatch',
 	        value: function attachPagingWatch() {
-	            var _this5 = this;
+	            var _this6 = this;
 	
 	            if (!this.scope) {
 	                return;
 	            }
 	            this.pagingWatchHandle = this.scope.$watch(function () {
-	                return _this5.paging;
+	                return _this6.paging;
 	            }, function (newValue, oldValue) {
 	                if (newValue.sortBy !== oldValue.sortBy || newValue.pageIndex !== oldValue.pageIndex) {
-	                    _this5.apply(false);
+	                    _this6.apply(false);
 	                }
 	            }, true);
 	        }
