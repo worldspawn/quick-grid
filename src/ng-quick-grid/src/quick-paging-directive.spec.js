@@ -105,5 +105,122 @@ describe('ngQuickGrid', function () {
         expect(td.querySelectorAll('span.midRange button').length).toBe(0);
         expect(td.querySelectorAll('span.endRange button').length).toBe(8);
       }));
+
+      it ('should have only integer page numbers (even max, odd page count)', inject(function ($rootScope, $compile, $templateCache) {
+        var scope = $rootScope.$new();
+        scope.model = model;
+        
+
+        var element = angular.element('<table quick-grid grid-model="model.search"><tfoot><tr><td colspan="6" class="text-center" quick-paging></td></tr></tfoot></table>');
+        element = $compile(element)(scope);
+        $rootScope.$digest();
+        
+        //when reading this remember the page index is an 0 based index. the page number is not
+        var td = element[0].querySelector('tfoot td');
+        var footScope = angular.element(td).isolateScope();
+        model.search.pageCount = Array(221);
+        model.search.paging.pageIndex = 0;
+        $rootScope.$digest();
+
+        footScope.quickPaging.drawStartRange.forEach((x) => {
+            expect(x % 1).toBe(0);
+        });
+
+        footScope.quickPaging.drawMidRange.forEach((x) => {
+            expect(x % 1).toBe(0);
+        });        
+
+        footScope.quickPaging.drawEndRange.forEach((x) => {
+            expect(x % 1).toBe(0);
+        });
+      }));
+
+      it ('should have only integer page numbers (even max, even page count)', inject(function ($rootScope, $compile, $templateCache) {
+        var scope = $rootScope.$new();
+        scope.model = model;
+        
+
+        var element = angular.element('<table quick-grid grid-model="model.search"><tfoot><tr><td colspan="6" class="text-center" quick-paging></td></tr></tfoot></table>');
+        element = $compile(element)(scope);
+        $rootScope.$digest();
+        
+        //when reading this remember the page index is an 0 based index. the page number is not
+        var td = element[0].querySelector('tfoot td');
+        var footScope = angular.element(td).isolateScope();
+        model.search.pageCount = Array(220);
+        model.search.paging.pageIndex = 0;
+        $rootScope.$digest();
+
+        footScope.quickPaging.drawStartRange.forEach((x) => {
+            expect(x % 1).toBe(0);
+        });
+
+        footScope.quickPaging.drawMidRange.forEach((x) => {
+            expect(x % 1).toBe(0);
+        });        
+
+        footScope.quickPaging.drawEndRange.forEach((x) => {
+            expect(x % 1).toBe(0);
+        });
+      }));
+
+      it ('should have only integer page numbers (odd max, even page count)', inject(function ($rootScope, $compile, $templateCache) {
+        var scope = $rootScope.$new();
+        scope.model = model;
+        
+
+        var element = angular.element('<table quick-grid grid-model="model.search"><tfoot><tr><td colspan="6" class="text-center" quick-paging="11"></td></tr></tfoot></table>');
+        element = $compile(element)(scope);
+        $rootScope.$digest();
+        
+        //when reading this remember the page index is an 0 based index. the page number is not
+        var td = element[0].querySelector('tfoot td');
+        var footScope = angular.element(td).isolateScope();
+        model.search.pageCount = Array(220);
+        model.search.paging.pageIndex = 0;
+        $rootScope.$digest();
+
+        footScope.quickPaging.drawStartRange.forEach((x) => {
+            expect(x % 1).toBe(0);
+        });
+
+        footScope.quickPaging.drawMidRange.forEach((x) => {
+            expect(x % 1).toBe(0);
+        });        
+
+        footScope.quickPaging.drawEndRange.forEach((x) => {
+            expect(x % 1).toBe(0);
+        });
+      }));
+
+      it ('should have only integer page numbers (odd max, odd page count)', inject(function ($rootScope, $compile, $templateCache) {
+        var scope = $rootScope.$new();
+        scope.model = model;
+        
+
+        var element = angular.element('<table quick-grid grid-model="model.search"><tfoot><tr><td colspan="6" class="text-center" quick-paging="11"></td></tr></tfoot></table>');
+        element = $compile(element)(scope);
+        $rootScope.$digest();
+        
+        //when reading this remember the page index is an 0 based index. the page number is not
+        var td = element[0].querySelector('tfoot td');
+        var footScope = angular.element(td).isolateScope();
+        model.search.pageCount = Array(221);
+        model.search.paging.pageIndex = 0;
+        $rootScope.$digest();
+
+        footScope.quickPaging.drawStartRange.forEach((x) => {
+            expect(x % 1).toBe(0);
+        });
+
+        footScope.quickPaging.drawMidRange.forEach((x) => {
+            expect(x % 1).toBe(0);
+        });        
+
+        footScope.quickPaging.drawEndRange.forEach((x) => {
+            expect(x % 1).toBe(0);
+        });
+      }));
+
     });
    });

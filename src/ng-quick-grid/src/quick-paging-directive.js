@@ -21,7 +21,7 @@ function directive() {
                 var pagingWatch;
 
                 pagingWatch = $scope.$watch(() => this.searchModel.pageCount.length, (newValue, oldValue) => {
-                    if (newValue === oldValue) {
+                    if (newValue === oldValue && newValue !== undefined) {
                         return;
                     }
 
@@ -39,15 +39,21 @@ function directive() {
                         
                         if (this.maxItems % 2 === 0) {
                             var mid = newValue / 2;
-                            this.midRange = [mid -2, mid -1, mid];
-                        }
-                        else {
-                            var mid = newValue / 2;
                             if (mid % 1 == 0) {
                                 this.midRange = [mid -1, mid, mid +1];
                             }
                             else {
-                                this.midRange = [mid -0.5, mid +0.5];
+                                this.midRange = [mid -1.5, mid -0.5, mid +0.5];
+                            }
+                        }
+                        else {
+                            var mid = newValue / 2;
+                            
+                            if (mid % 1 == 0) {
+                                this.midRange = [mid -1, mid, mid +1];
+                            }
+                            else {
+                                this.midRange = [mid -1.5, mid -0.5, mid +0.5];
                             }
 
                             endStart++;

@@ -164,13 +164,18 @@
 	
 	                        if (_this.maxItems % 2 === 0) {
 	                            var mid = newValue / 2;
-	                            _this.midRange = [mid - 2, mid - 1, mid];
-	                        } else {
-	                            var mid = newValue / 2;
 	                            if (mid % 1 == 0) {
 	                                _this.midRange = [mid - 1, mid, mid + 1];
 	                            } else {
-	                                _this.midRange = [mid - 0.5, mid + 0.5];
+	                                _this.midRange = [mid - 1.5, mid - 0.5, mid + 0.5];
+	                            }
+	                        } else {
+	                            var mid = newValue / 2;
+	
+	                            if (mid % 1 == 0) {
+	                                _this.midRange = [mid - 1, mid, mid + 1];
+	                            } else {
+	                                _this.midRange = [mid - 1.5, mid - 0.5, mid + 0.5];
 	                            }
 	
 	                            endStart++;
