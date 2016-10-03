@@ -21,7 +21,7 @@ function directive() {
                 var pagingWatch;
 
                 pagingWatch = $scope.$watch(() => this.searchModel.pageCount.length, (newValue, oldValue) => {
-                    if (newValue === oldValue && newValue !== undefined) {
+                    if (newValue === oldValue) {
                         return;
                     }
 
@@ -66,10 +66,6 @@ function directive() {
                 });
 
                 $scope.$watch(() => this.searchModel.paging.pageIndex, (newValue, oldValue) => {
-                    if (newValue === oldValue) {
-                        return;
-                    }
-
                     newValue = newValue +1;
                     this.drawStartRange = this.startRange.slice(0);
                     this.drawEndRange = this.endRange.slice(0);

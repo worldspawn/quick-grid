@@ -75,35 +75,35 @@ describe('ngQuickGrid', function () {
         model.search.paging.pageIndex = 7;
         $rootScope.$digest();
         
-        expect(td.querySelectorAll('span.startRange button').length).toBe(6);
-        expect(td.querySelectorAll('span.midRange button').length).toBe(3);
-        expect(td.querySelectorAll('span.endRange button').length).toBe(6);
+        expect(td.querySelectorAll('li.startRange').length).toBe(6);
+        expect(td.querySelectorAll('li.midRange').length).toBe(3);
+        expect(td.querySelectorAll('li.endRange').length).toBe(6);
         
         model.search.paging.pageIndex = 10;
         $rootScope.$digest();
-        expect(td.querySelectorAll('span.startRange button').length).toBe(6);
-        expect(td.querySelectorAll('span.midRange button').length).toBe(3);
-        expect(td.querySelectorAll('span.endRange button').length).toBe(6);
+        expect(td.querySelectorAll('li.startRange').length).toBe(6);
+        expect(td.querySelectorAll('li.midRange').length).toBe(3);
+        expect(td.querySelectorAll('li.endRange').length).toBe(6);
 
 
         model.search.paging.pageIndex = 11;
         $rootScope.$digest();
-        expect(td.querySelectorAll('span.startRange button').length).toBe(6);
-        expect(td.querySelectorAll('span.midRange button').length).toBe(3);
-        expect(td.querySelectorAll('span.endRange button').length).toBe(6);
+        expect(td.querySelectorAll('li.startRange').length).toBe(6);
+        expect(td.querySelectorAll('li.midRange').length).toBe(3);
+        expect(td.querySelectorAll('li.endRange').length).toBe(6);
         
         model.search.paging.pageIndex = 6;
         $rootScope.$digest();
 
-        expect(td.querySelectorAll('span.startRange button').length).toBe(8);
-        expect(td.querySelectorAll('span.midRange button').length).toBe(0);
-        expect(td.querySelectorAll('span.endRange button').length).toBe(7);//end gets padded
+        expect(td.querySelectorAll('li.startRange').length).toBe(8);
+        expect(td.querySelectorAll('li.midRange').length).toBe(0);
+        expect(td.querySelectorAll('li.endRange').length).toBe(7);//end gets padded
 
         model.search.paging.pageIndex = 13;
         $rootScope.$digest();
-        expect(td.querySelectorAll('span.startRange button').length).toBe(7);
-        expect(td.querySelectorAll('span.midRange button').length).toBe(0);
-        expect(td.querySelectorAll('span.endRange button').length).toBe(8);
+        expect(td.querySelectorAll('li.startRange').length).toBe(7);
+        expect(td.querySelectorAll('li.midRange').length).toBe(0);
+        expect(td.querySelectorAll('li.endRange').length).toBe(8);
       }));
 
       it ('should have only integer page numbers (even max, odd page count)', inject(function ($rootScope, $compile, $templateCache) {

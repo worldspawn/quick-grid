@@ -190,10 +190,6 @@
 	                $scope.$watch(function () {
 	                    return _this.searchModel.paging.pageIndex;
 	                }, function (newValue, oldValue) {
-	                    if (newValue === oldValue) {
-	                        return;
-	                    }
-	
 	                    newValue = newValue + 1;
 	                    _this.drawStartRange = _this.startRange.slice(0);
 	                    _this.drawEndRange = _this.endRange.slice(0);
@@ -261,7 +257,7 @@
 /* 4 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"btn-group\" ng-if=\"quickPaging.searchModel.pageCount.length > 1 && quickPaging.maxItems < quickPaging.searchModel.pageCount.length\">\r\n\t<button type=\"button\" class=\"btn btn-primary btn-sm\">&laquo;</button>\r\n\r\n\t<span class=\"startRange\">\r\n\t<button ng-repeat=\"x in quickPaging.drawStartRange track by $index\" ng-click=\"quickPaging.searchModel.paging.toPage(x-1)\" ng-disabled=\"(x+1) === quickPaging.searchModel.paging.pageIndex\" class=\"btn btn-primary btn-sm\">{{x}}</button>\r\n\t</span>\r\n\t<span>...</span>\r\n\t<span class=\"midRange\" ng-if=\"quickPaging.drawMidRange.length > 0\">\r\n\t<button ng-repeat=\"x in quickPaging.drawMidRange track by $index\" ng-click=\"quickPaging.searchModel.paging.toPage(x-1)\" ng-disabled=\"(x+1) === quickPaging.searchModel.paging.pageIndex\" class=\"btn btn-primary btn-sm\">{{x}}</button>\r\n\t</span>\r\n\t<span ng-if=\"quickPaging.drawMidRange.length > 0\">...</span>\r\n\t<span class=\"endRange\" ng-if=\"quickPaging.drawEndRange.length > 0\">\r\n\t<button ng-repeat=\"x in quickPaging.drawEndRange track by $index\" ng-click=\"quickPaging.searchModel.paging.toPage(x-1)\" ng-disabled=\"(x+1) === quickPaging.searchModel.paging.pageIndex\" class=\"btn btn-primary btn-sm\">{{x}}</button>\r\n\t</span>\r\n\t<button type=\"button\" class=\"btn btn-primary btn-sm\">&raquo;</button>\r\n</div>\r\n\r\n<div class=\"btn-group\" ng-if=\"quickPaging.searchModel.pageCount.length > 1 && quickPaging.maxItems >= quickPaging.searchModel.pageCount.length\">\r\n  <button ng-repeat=\"x in quickPaging.searchModel.pageCount track by $index\" ng-click=\"quickPaging.searchModel.paging.toPage($index)\" ng-disabled=\"$index === quickPaging.searchModel.paging.pageIndex\" class=\"btn btn-primary btn-sm\">{{$index + 1}}</button>\r\n</div>\r\n"
+	module.exports = "<nav aria-label=\"Page navigation\" ng-if=\"quickPaging.searchModel.pageCount.length > 1 && quickPaging.maxItems < quickPaging.searchModel.pageCount.length\">\r\n  <ul class=\"pagination\">\r\n  \t<li ng-disabled=\"quickPaging.searchModel.paging.pageIndex === 0\"><a ng-click=\"quickPaging.searchModel.paging.toPage(quickPaging.searchModel.paging.pageIndex - 1)\">&laquo;</a></li>\r\n  \t<li class=\"startRange\" ng-repeat=\"x in quickPaging.drawStartRange track by $index\" ng-class=\"{'active': (x-1) === quickPaging.searchModel.paging.pageIndex}\"><a ng-click=\"quickPaging.searchModel.paging.toPage(x-1)\">{{x}}</a></li>\r\n  \t<li disabled=\"disabled\"><a>...</a></li>\r\n  \t<li class=\"midRange\" ng-repeat=\"x in quickPaging.drawMidRange track by $index\" ng-class=\"{'active': (x-1) === quickPaging.searchModel.paging.pageIndex}\"><a ng-click=\"quickPaging.searchModel.paging.toPage(x-1)\">{{x}}</a></li>\r\n  \t<li disabled=\"disabled\" ng-if=\"quickPaging.drawMidRange.length > 0\"><a>...</a></li>\r\n\t<li class=\"endRange\" ng-repeat=\"x in quickPaging.drawEndRange track by $index\" ng-class=\"{'active': (x-1) === quickPaging.searchModel.paging.pageIndex}\"><a ng-click=\"quickPaging.searchModel.paging.toPage(x-1)\">{{x}}</a></li>\r\n\t<li ng-disabled=\"quickPaging.searchModel.paging.pageIndex === quickPaging.drawEndRange[quickPaging.drawEndRange.length-1]\"><a ng-click=\"quickPaging.searchModel.paging.toPage(quickPaging.searchModel.paging.pageIndex + 1)\">&raquo;</a></li>\r\n  </ul>\r\n</nav>\r\n\r\n<div class=\"btn-group\" ng-if=\"quickPaging.searchModel.pageCount.length > 1 && quickPaging.maxItems >= quickPaging.searchModel.pageCount.length\">\r\n  <button ng-repeat=\"x in quickPaging.searchModel.pageCount track by $index\" ng-click=\"quickPaging.searchModel.paging.toPage($index)\" ng-disabled=\"$index === quickPaging.searchModel.paging.pageIndex\" class=\"btn btn-primary btn-sm\">{{$index + 1}}</button>\r\n</div>\r\n"
 
 /***/ },
 /* 5 */
@@ -449,26 +445,33 @@
 	    }, {
 	        key: 'apply',
 	        value: function apply(reset) {
+	            var _this = this;
+	
 	            if (this.pagingWatchHandle) {
 	                this.pagingWatchHandle();
 	            }
 	            if (reset) {
-	                this.paging.pageIndex = 0;
 	                this.paging.filterHash = null;
 	            }
-	            this.callback(this).then(this.updatePaging.bind(this)).then(this.attachPagingWatch.bind(this));
+	            this.callback(this).then(function (response) {
+	                if (reset) {
+	                    _this.paging.pageIndex = 0;
+	                }
+	
+	                return response;
+	            }).then(this.updatePaging.bind(this)).then(this.attachPagingWatch.bind(this));
 	        }
 	    }, {
 	        key: 'toQueryString',
 	        value: function toQueryString() {
-	            var _this = this;
+	            var _this2 = this;
 	
 	            var segments = [];
 	            var filterCount = 0;
 	            Object.keys(this.filters).forEach(function (key) {
-	                var value = _this.filters[key].toJSON();
+	                var value = _this2.filters[key].toJSON();
 	                if (value !== undefined) {
-	                    var not = _this.filters[key].not ? '!' : '';
+	                    var not = _this2.filters[key].not ? '!' : '';
 	                    var name = 'filters[' + filterCount++ + ']';
 	                    segments.push(name + '.key=' + escape(key));
 	                    segments.push(name + '.value=' + escape(not + value));
@@ -477,7 +480,7 @@
 	
 	            if (this.model) {
 	                Object.keys(this.model).forEach(function (key) {
-	                    var value = _this.model[key];
+	                    var value = _this2.model[key];
 	                    if (value !== undefined && value !== null) {
 	                        if (value.toJSON) {
 	                            value = value.toJSON();
@@ -497,7 +500,7 @@
 	    }, {
 	        key: 'toJSON',
 	        value: function toJSON() {
-	            var _this2 = this;
+	            var _this3 = this;
 	
 	            var result = {
 	                paging: this.paging,
@@ -505,7 +508,7 @@
 	            };
 	
 	            Object.keys(this.model).forEach(function (key) {
-	                result[key] = _this2.model[key];
+	                result[key] = _this3.model[key];
 	            });
 	
 	            return result;
@@ -513,29 +516,29 @@
 	    }, {
 	        key: 'attachOtherWatchers',
 	        value: function attachOtherWatchers() {
-	            var _this3 = this;
+	            var _this4 = this;
 	
 	            this.modelWatchHandle = this.scope.$watch(function () {
-	                return _this3.model;
+	                return _this4.model;
 	            }, this.onChange.bind(this), true);
 	
 	            this.filterWatchHandle = this.scope.$watch(function () {
-	                return _this3.filters;
+	                return _this4.filters;
 	            }, this.onChange.bind(this), true);
 	        }
 	    }, {
 	        key: 'attachPagingWatch',
 	        value: function attachPagingWatch() {
-	            var _this4 = this;
+	            var _this5 = this;
 	
 	            if (!this.scope) {
 	                return;
 	            }
 	            this.pagingWatchHandle = this.scope.$watch(function () {
-	                return _this4.paging;
+	                return _this5.paging;
 	            }, function (newValue, oldValue) {
 	                if (newValue.sortBy !== oldValue.sortBy || newValue.pageIndex !== oldValue.pageIndex) {
-	                    _this4.apply(false);
+	                    _this5.apply(false);
 	                }
 	            }, true);
 	        }
