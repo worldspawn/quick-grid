@@ -466,7 +466,7 @@
 	        }
 	    }, {
 	        key: 'reset',
-	        value: function reset() {
+	        value: function reset(resetCallback) {
 	            var _this2 = this;
 	
 	            if (this.modelWatchHandler) {
@@ -480,9 +480,8 @@
 	            Object.keys(this.filters).forEach(function (key) {
 	                return _this2.filters[key].value = undefined;
 	            });
-	            Object.keys(this.model).forEach(function (key) {
-	                return _this2.model[key] = undefined;
-	            });
+	
+	            if (resetCallback) resetCallback();
 	
 	            this.attachOtherWatchers();
 	
