@@ -154,7 +154,6 @@ class SearchModel {
        
         this.apply(true);
     }
-        
 
     toQueryString() {
         var segments = [];
@@ -206,6 +205,10 @@ class SearchModel {
     }
 
     attachOtherWatchers() {
+        if(!this.scope){
+            return;
+        }
+        
         this.modelWatchHandle = this.scope.$watch(() => {
             return this.model;
         }, this.onChange.bind(this), true);

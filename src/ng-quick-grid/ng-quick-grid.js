@@ -545,6 +545,10 @@
 	        value: function attachOtherWatchers() {
 	            var _this5 = this;
 	
+	            if (!this.scope) {
+	                return;
+	            }
+	
 	            this.modelWatchHandle = this.scope.$watch(function () {
 	                return _this5.model;
 	            }, this.onChange.bind(this), true);
