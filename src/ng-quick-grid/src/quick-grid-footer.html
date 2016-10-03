@@ -6,7 +6,7 @@
   	<li class="midRange" ng-repeat="x in quickPaging.drawMidRange track by $index" ng-class="{'active': (x-1) === quickPaging.searchModel.paging.pageIndex}"><a ng-click="quickPaging.searchModel.paging.toPage(x-1)">{{x}}</a></li>
   	<li disabled="disabled" ng-if="quickPaging.drawMidRange.length > 0"><a>...</a></li>
 	<li class="endRange" ng-repeat="x in quickPaging.drawEndRange track by $index" ng-class="{'active': (x-1) === quickPaging.searchModel.paging.pageIndex}"><a ng-click="quickPaging.searchModel.paging.toPage(x-1)">{{x}}</a></li>
-	<li ng-disabled="quickPaging.searchModel.paging.pageIndex === quickPaging.drawEndRange[quickPaging.drawEndRange.length-1]"><a ng-click="quickPaging.searchModel.paging.toPage(quickPaging.searchModel.paging.pageIndex + 1)">&raquo;</a></li>
+	<li ng-disabled="(quickPaging.searchModel.paging.pageIndex + 1) === quickPaging.drawEndRange[quickPaging.drawEndRange.length-1]"><a ng-click="quickPaging.searchModel.paging.toPage(quickPaging.searchModel.paging.pageIndex + 1)">&raquo;</a></li>
   </ul>
 </nav>
 
