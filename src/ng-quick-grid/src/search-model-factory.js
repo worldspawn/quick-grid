@@ -138,7 +138,7 @@ class SearchModel {
             .then(this.attachPagingWatch.bind(this));
     }
     
-    reset() {
+    reset(resetCallback) {
         if(this.modelWatchHandler) {
             this.modelWatchHandler();
         }
@@ -148,7 +148,9 @@ class SearchModel {
         }
         
         Object.keys(this.filters).forEach((key) => this.filters[key].value = undefined);
-        Object.keys(this.model).forEach((key) => this.model[key] = undefined);
+        
+        if(resetCallback)
+            resetCallback();
         
         this.attachOtherWatchers();
        
