@@ -1,4 +1,5 @@
 import template from './quick-grid-footer.html';
+import './quick-grid-footer.scss';
 
 function directive() {
     return {

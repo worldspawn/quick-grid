@@ -1,0 +1,10 @@
+ul.pagination > li.separator > span {
+    border-top-color: transparent;
+    border-bottom-color: transparent;
+
+    &:hover {
+        border-top-color: transparent;
+        border-bottom-color: transparent;
+        background-color: transparent;
+    }
+}
