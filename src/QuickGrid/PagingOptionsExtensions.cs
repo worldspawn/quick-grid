@@ -34,14 +34,14 @@ namespace QuickGrid
 
             if (queryOptions.Paging.PageSize.HasValue)
             {
-                result.Results =
+                result.ResultsQuery =
                     orderedList
                         .Skip(queryOptions.Paging.PageIndex * queryOptions.Paging.PageSize.Value)
                         .Take(queryOptions.Paging.PageSize.Value);
             }
             else
             {
-                result.Results = orderedList;
+                result.ResultsQuery = orderedList;
             }
 
             return result;
