@@ -4,7 +4,7 @@
     <id>$id$</id>
     <version>$version$</version>
     <title>$title$</title>
-    <authors>$author$</authors>
+    <authors>worldspawn APErebus</authors>
     <owners>$author$</owners>
     <licenseUrl>https://raw.githubusercontent.com/worldspawn/quick-grid/master/LICENSE.md</licenseUrl>
     <projectUrl>http://github.com/worldspawn/quick-grid</projectUrl>

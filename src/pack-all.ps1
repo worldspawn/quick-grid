@@ -4,6 +4,7 @@ param (
     [switch]$push = $false
 )
 
+
 if (!(Test-Path ".\pack"))
 {
   mkdir pack
@@ -20,8 +21,8 @@ $assemblyInfos = gci -r AssemblyInfo.cs
 
 foreach ($info in $assemblyInfos) {
   $content = get-content $info;
-  $content = $content -replace '\[assembly\: AssemblyVersion\(\"([\d\.]+)\"\)\]', "[assembly: AssemblyVersion(`"$version`")]"
-  $content = $content -replace '\[assembly\: AssemblyFileVersion\(\"([\d\.]+)\"\)\]', "[assembly: AssemblyFileVersion(`"$version`")]"
+  $content = $content -replace '\[assembly\: AssemblyVersion\(\"([\d\.]*)\"\)\]', "[assembly: AssemblyVersion(`"$version`")]"
+  $content = $content -replace '\[assembly\: AssemblyFileVersion\(\"([\d\.]*)\"\)\]', "[assembly: AssemblyFileVersion(`"$version`")]"
 
   set-content -Path $info -Encoding UTF8 -Value $content
 }
@@ -30,5 +31,6 @@ foreach ($info in $assemblyInfos) {
 
 
 if ($push) {
-  & $nuget push ".\pack\QuickGrid.$version.nupkg" -ApiKey $apiKey
+  Write-Host "Pushing"
+  & $nuget push ".\pack\QuickGrid.$version.nupkg" -ApiKey $apiKey -Source https://www.nuget.org/api/v2/package
 }
