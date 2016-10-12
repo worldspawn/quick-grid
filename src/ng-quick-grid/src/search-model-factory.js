@@ -126,7 +126,8 @@ class SearchModel {
         if (reset) {            
             this.paging.filterHash = null;
         }
-        this.callback(this)
+
+        return this.callback(this)
             .then((response)=> {
                 if (reset) {
                     this.paging.pageIndex = 0;
@@ -154,7 +155,7 @@ class SearchModel {
         
         this.attachOtherWatchers();
        
-        this.apply(true);
+        return this.apply(true);
     }
 
     toQueryString() {

@@ -806,7 +806,8 @@
 	            if (reset) {
 	                this.paging.filterHash = null;
 	            }
-	            this.callback(this).then(function (response) {
+	
+	            return this.callback(this).then(function (response) {
 	                if (reset) {
 	                    _this.paging.pageIndex = 0;
 	                }
@@ -835,7 +836,7 @@
 	
 	            this.attachOtherWatchers();
 	
-	            this.apply(true);
+	            return this.apply(true);
 	        }
 	    }, {
 	        key: 'toQueryString',
