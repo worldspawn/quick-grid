@@ -9,24 +9,43 @@ namespace QuickGrid.Tests
     public class QueryFilterParsingTests
     {
         private readonly IQueryable<ListItem> _items;
+        private Guid _id;
 
         public class ListItem
         {
             public string Value { get; set; }
             public DateTime Date { get; set; }
             public int Numeric { get; set; }
+            public Guid Id { get; set; }
         }
 
         public QueryFilterParsingTests()
         {
+            _id = Guid.NewGuid();
             _items = new List<ListItem>()
             {
-                new ListItem() {Value = "One", Date = DateTime.UtcNow.AddYears(-5), Numeric = 50},
-                new ListItem() {Value = "Two", Date = DateTime.UtcNow.AddYears(-4), Numeric = 40},
-                new ListItem() {Value = "Three", Date = DateTime.UtcNow.AddYears(-3), Numeric = 30},
-                new ListItem() {Value = "Four", Date = DateTime.UtcNow.AddYears(-2), Numeric = 20},
-                new ListItem() {Value = "Five", Date = DateTime.UtcNow.AddYears(-1), Numeric = 10},
+                new ListItem() {Value = "One", Date = DateTime.UtcNow.AddYears(-5), Numeric = 50, Id = _id},
+                new ListItem() {Value = "Two", Date = DateTime.UtcNow.AddYears(-4), Numeric = 40, Id = _id},
+                new ListItem() {Value = "Three", Date = DateTime.UtcNow.AddYears(-3), Numeric = 30, Id = _id},
+                new ListItem() {Value = "Four", Date = DateTime.UtcNow.AddYears(-2), Numeric = 20, Id = _id},
+                new ListItem() {Value = "Five", Date = DateTime.UtcNow.AddYears(-1), Numeric = 10, Id = _id},
             }.AsQueryable();
+        }
+
+        [Fact]
+        public void CanCorrectlyParseGuidParameter()
+        {
+            var options = new TestOptions
+            {
+                Filters = new Dictionary<string, string>
+                {
+                    {"Id", $"={_id:D}"}
+                }
+            };
+
+            var list = QueryOptions.Filter(_items, options);
+
+            Assert.Contains($"Id == \"{_id:D}\"", list.Expression.ToString());
         }
 
         [Fact]
