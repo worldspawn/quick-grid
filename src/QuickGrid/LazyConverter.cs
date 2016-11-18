@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using Newtonsoft.Json;
 
 namespace QuickGrid
@@ -14,7 +15,7 @@ namespace QuickGrid
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             var value = reader.Value;
-            return new Lazy<T>(() => (T)Convert.ChangeType(value, typeof(Lazy<T>)));
+            return new Lazy<T>(() => (T)TypeDescriptor.GetConverter(typeof(T)).ConvertFrom(value));
         }
 
         public override bool CanConvert(Type objectType)

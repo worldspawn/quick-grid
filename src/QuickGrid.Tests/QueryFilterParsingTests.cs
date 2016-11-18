@@ -45,7 +45,7 @@ namespace QuickGrid.Tests
 
             var list = QueryOptions.Filter(_items, options);
 
-            Assert.Contains($"Id == \"{_id:D}\"", list.Expression.ToString());
+            Assert.Contains($"Id == {_id:D}", list.Expression.ToString());
         }
 
         [Fact]

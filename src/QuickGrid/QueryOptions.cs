@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
@@ -108,7 +109,8 @@ namespace QuickGrid
                 return Enum.Parse(type, value);
             }
 
-            return Convert.ChangeType(value, type);
+            
+            return TypeDescriptor.GetConverter(type).ConvertFromInvariantString(value);
         }
 
         private static Expression ResolveFilterExpression(MemberExpression expression, string filter)
