@@ -23,7 +23,10 @@ namespace QuickGrid
             var filterHash = Convert.ToBase64String(hasher.ComputeHash(Encoding.UTF8.GetBytes(filterAsString)));
             result.FilterHash = filterHash;
 
-            if (filterHash == queryOptions.Paging.FilterHash)
+            var submittedFilterHash = queryOptions.Paging.FilterHash;
+            submittedFilterHash = submittedFilterHash?.Replace(' ', '+');//base64 decode bug fix
+
+            if (filterHash == submittedFilterHash)
             {
                 result.Total = new Lazy<int?>(() => null);
             }
