@@ -82,13 +82,20 @@
 
 /***/ },
 /* 2 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
+	
+	var _angular = __webpack_require__(1);
+	
+	var _angular2 = _interopRequireDefault(_angular);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
 	function directive() {
 	    return {
 	        restrict: 'A',
@@ -97,7 +104,46 @@
 	        bindToController: true,
 	        controller: ['$scope', '$element', '$attrs', function ($scope, $element, $attrs) {
 	            this.searchModel = $scope.$eval($attrs.gridModel);
-	        }]
+	        }],
+	        link: function link(scope, element) {
+	            var body = _angular2.default.element(element[0].ownerDocument.querySelector('body'));
+	            var bodyOff = function bodyOff(ev) {
+	                console.log(ev);
+	                element.removeClass('ctrl-hover');
+	                body.off('keyup', bodyOff);
+	            };
+	
+	            element.on('mousemove', function (ev) {
+	                if (ev.ctrlKey) {
+	                    scope.$apply(function () {
+	                        if (!element.hasClass('ctrl-hover')) {
+	                            element.addClass('ctrl-hover');
+	
+	                            body.on('keyup', bodyOff);
+	                        }
+	                    });
+	                } else {
+	                    element.removeClass('ctrl-hover');
+	                    body.off('keyup', bodyOff);
+	                }
+	            });
+	
+	            element.on('mouseout', function (ev) {
+	                var e = ev.toElement;
+	                while (e !== null && e !== element[0]) {
+	                    e = e.parentElement;
+	                }
+	
+	                if (e === element[0]) {
+	                    return;
+	                }
+	
+	                scope.$apply(function () {
+	                    element.removeClass('ctrl-hover');
+	                    body.off('keyup', bodyOff);
+	                });
+	            });
+	        }
 	    };
 	}
 	
@@ -622,14 +668,34 @@
 	    return {
 	        restrict: 'A',
 	        require: '^quickGrid',
+	        scope: true,
+	        templateSource: '<span ng-if="grid.searchModel.paging.isSorting(sortBy.toLowerCase()) !== false">        \n            <i class="glyphicon glyphicon-triangle-bottom" ng-if="grid.searchModel.paging.sortBy[grid.searchModel.paging.isSorting(sortBy.toLowerCase())].indexOf(\'desc\') > -1"></i>\n            <i class="glyphicon glyphicon-triangle-top" ng-if="grid.searchModel.paging.sortBy[grid.searchModel.paging.isSorting(sortBy.toLowerCase())].indexOf(\'desc\') === -1"></i>\n            </span>',
 	        link: function link($scope, $element, $attrs, quickGrid) {
-	            var sortBy = $attrs.quickSort;
-	            var carets = angular.element('<span ng-if="grid.searchModel.paging.sortBy.toLowerCase().indexOf(\'' + sortBy.toLowerCase() + '\') === 0"><i class="glyphicon glyphicon-triangle-bottom" ng-if="grid.searchModel.paging.sortBy.toLowerCase().indexOf(\'desc\') > -1"></i><i class="glyphicon glyphicon-triangle-top" ng-if="grid.searchModel.paging.sortBy.toLowerCase().indexOf(\'desc\') === -1"></i></span>');
+	            $scope.sortBy = $attrs.quickSort;
+	            var carets = angular.element(this.templateSource);
 	            $element.append($compile(carets)($scope));
-	            $element.on('click', function () {
+	            $element.on('click', function (ev) {
 	                $scope.$apply(function () {
-	                    quickGrid.searchModel.paging.sort(sortBy);
+	                    quickGrid.searchModel.paging.sort($scope.sortBy, !ev.ctrlKey);
 	                });
+	            });
+	
+	            $scope.$watch(function () {
+	                return $scope.grid.searchModel.paging.isSorting($scope.sortBy.toLowerCase());
+	            }, function (v) {
+	                if (v === false) {
+	                    $element.removeClass('active');
+	                    $element.removeClass('active-1');
+	                    $element.removeClass('active-2');
+	                    $element.removeClass('active-3');
+	                } else {
+	                    $element.addClass('active');
+	                    $element.addClass('active-' + (v + 1));
+	                }
+	
+	                if (quickGrid.searchModel.paging.sortBy.length >= 3) {
+	                    $element.addClass('sort-full');
+	                }
 	            });
 	        }
 	    };
@@ -745,14 +811,37 @@
 	
 	    _createClass(PagingModel, [{
 	        key: 'sort',
-	        value: function sort(by) {
+	        value: function sort(by, reset) {
 	            if (by === null || by === undefined) {
 	                delete this.sortBy;
 	            } else {
-	                if (by === this.sortBy) {
-	                    this.sortBy = by + ' desc';
+	                if (!this.sortBy || reset) {
+	                    var index = null;
+	                    if ((index = this.isSorting(by.toLowerCase())) !== false) {
+	                        if (this.sortBy[index].length === by.length) {
+	                            this.sortBy = [by + ' desc'];
+	                            return;
+	                        } else {
+	                            this.sortBy = [by];
+	                            return;
+	                        }
+	                    } else {
+	                        this.sortBy = [];
+	                    }
+	                }
+	
+	                var currentIndex = this.isSorting(by.toLowerCase());
+	
+	                if (currentIndex !== false) {
+	                    if (this.sortBy[currentIndex].length === by.length) {
+	                        this.sortBy[currentIndex] = by + ' desc';
+	                    } else {
+	                        this.sortBy[currentIndex] = by;
+	                    }
 	                } else {
-	                    this.sortBy = by;
+	                    if (this.sortBy.length < 3) {
+	                        this.sortBy.push(by);
+	                    }
 	                }
 	            }
 	        }
@@ -763,6 +852,20 @@
 	                return;
 	            }
 	            this.pageIndex = pageIndex;
+	        }
+	    }, {
+	        key: 'isSorting',
+	        value: function isSorting(by) {
+	            if (!this.sortBy) return false;
+	
+	            var index = false;
+	            this.sortBy.forEach(function (b, i) {
+	                if (b.toLowerCase().indexOf(by) > -1) {
+	                    index = i;
+	                }
+	            });
+	
+	            return index;
 	        }
 	    }]);
 	
@@ -869,7 +972,14 @@
 	            }
 	
 	            segments.push('paging.pageIndex=' + (this.paging.pageIndex || 0));
-	            segments.push('paging.sortBy=' + escape(this.paging.sortBy || ''));
+	
+	            var sortCount = 0;
+	            this.paging.sortBy.forEach(function (key) {
+	                if (key !== undefined) {
+	                    segments.push('paging.sortBy[' + sortCount++ + ']=' + escape(key));
+	                }
+	            });
+	
 	            segments.push('paging.filterHash=' + escape(this.paging.filterHash || ''));
 	
 	            return segments.join('&');

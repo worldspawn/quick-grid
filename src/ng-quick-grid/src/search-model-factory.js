@@ -77,14 +77,40 @@ class PagingModel {
     constructor(defaultSortBy) {
         this.sort(defaultSortBy);
     }
-    sort(by) {
+    sort(by, reset) {
         if (by === null || by === undefined) {
             delete this.sortBy;
         } else {
-            if (by === this.sortBy) {
-                this.sortBy = by + ' desc';
+            if (!this.sortBy || reset) {
+                let index = null;
+                if ((index = this.isSorting(by.toLowerCase())) !== false) {
+                    if (this.sortBy[index].length === by.length) {
+                        this.sortBy = [by + ' desc'];
+                        return;
+                    }
+                    else {
+                        this.sortBy = [by];
+                        return;
+                    }                    
+                }
+                else {
+                    this.sortBy = [];
+                }
+            }
+
+            var currentIndex = this.isSorting(by.toLowerCase());
+            
+            if (currentIndex !== false) {
+                if (this.sortBy[currentIndex].length === by.length) {
+                    this.sortBy[currentIndex] = by + ' desc';
+                }
+                else {
+                    this.sortBy[currentIndex] = by;
+                }                
             } else {
-                this.sortBy = by;
+                if (this.sortBy.length < 3) {
+                    this.sortBy.push(by);
+                }
             }
         }
     }
@@ -94,6 +120,20 @@ class PagingModel {
             return;
         }
         this.pageIndex = pageIndex;
+    }
+
+    isSorting(by) {
+        if (!this.sortBy)
+            return false;
+
+        var index = false;
+        this.sortBy.forEach((b, i) => {
+            if (b.toLowerCase().indexOf(by) > -1) {
+                index = i;
+            }
+        });
+
+        return index;
     }
 }
 
@@ -187,7 +227,14 @@ class SearchModel {
         }
 
         segments.push('paging.pageIndex=' + (this.paging.pageIndex || 0));
-        segments.push('paging.sortBy=' + escape(this.paging.sortBy || ''));
+
+        var sortCount = 0;
+        this.paging.sortBy.forEach((key) => {
+            if (key !== undefined) {
+                segments.push('paging.sortBy[' + sortCount++ + ']=' + escape(key));
+            }
+        });
+
         segments.push('paging.filterHash=' + escape(this.paging.filterHash || ''));
 
         return segments.join('&');

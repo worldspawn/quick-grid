@@ -10,9 +10,14 @@ namespace QuickGrid
 {
     public class PagingOptions
     {
+        public PagingOptions()
+        {
+            SortBy = new List<string>();
+        }
+
         public int PageIndex { get; set; }
         public int? PageSize { get; set; }
-        public string SortBy { get; set; }
+        public List<string> SortBy { get; set; }
         public string FilterHash { get; set; }
     }
 
@@ -30,7 +35,7 @@ namespace QuickGrid
             Paging = new PagingOptions();
             Paging.PageIndex = 0;
             Paging.PageSize = pageSize;
-            Paging.SortBy = defaultSortBy;
+            Paging.SortBy.Add(defaultSortBy);
             AllowedFilters = allowedFilters;
         }
 
@@ -194,7 +199,7 @@ namespace QuickGrid
             var param = Expression.Parameter(list.ElementType, "r");
             var thenMode = false;
 
-            foreach (var member in options.Paging.SortBy.Split(','))
+            foreach (var member in options.Paging.SortBy)
             {
                 MemberExpression memberExpression = null;
                 var chop = member.Split(' ');
