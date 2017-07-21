@@ -42,7 +42,7 @@
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
@@ -74,15 +74,15 @@
 	
 	exports.default = _angular2.default.module('ngQuickGrid', []).directive('quickGrid', _quickGridDirective2.default).directive('quickPaging', _quickPagingDirective2.default).directive('quickSort', _quickSortDirective2.default).factory('SearchModel', _searchModelFactory2.default);
 
-/***/ },
+/***/ }),
 /* 1 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	module.exports = angular;
 
-/***/ },
+/***/ }),
 /* 2 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
@@ -108,7 +108,6 @@
 	        link: function link(scope, element) {
 	            var body = _angular2.default.element(element[0].ownerDocument.querySelector('body'));
 	            var bodyOff = function bodyOff(ev) {
-	                console.log(ev);
 	                element.removeClass('ctrl-hover');
 	                body.off('keyup', bodyOff);
 	            };
@@ -149,9 +148,9 @@
 	
 	exports.default = directive;
 
-/***/ },
+/***/ }),
 /* 3 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
@@ -301,15 +300,15 @@
 	
 	exports.default = directive;
 
-/***/ },
+/***/ }),
 /* 4 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	module.exports = "<nav aria-label=\"Page navigation\" ng-if=\"quickPaging.searchModel.pageCount.length > 1 && quickPaging.maxItems < quickPaging.searchModel.pageCount.length\">\r\n  <ul class=\"pagination\">\r\n  \t<li ng-disabled=\"quickPaging.searchModel.paging.pageIndex === 0\"><a ng-click=\"quickPaging.searchModel.paging.toPage(quickPaging.searchModel.paging.pageIndex - 1)\">&laquo;</a></li>\r\n  \t<li class=\"startRange\" ng-repeat=\"x in quickPaging.drawStartRange track by $index\" ng-class=\"{'active': (x-1) === quickPaging.searchModel.paging.pageIndex}\"><a ng-click=\"quickPaging.searchModel.paging.toPage(x-1)\">{{x}}</a></li>\r\n  \t<li class=\"separator\" disabled=\"disabled\"><span>...</span></li>\r\n  \t<li class=\"midRange\" ng-repeat=\"x in quickPaging.drawMidRange track by $index\" ng-class=\"{'active': (x-1) === quickPaging.searchModel.paging.pageIndex}\"><a ng-click=\"quickPaging.searchModel.paging.toPage(x-1)\">{{x}}</a></li>\r\n  \t<li class=\"separator\" disabled=\"disabled\" ng-if=\"quickPaging.drawMidRange.length > 0\"><span>...</span></li>\r\n\t<li class=\"endRange\" ng-repeat=\"x in quickPaging.drawEndRange track by $index\" ng-class=\"{'active': (x-1) === quickPaging.searchModel.paging.pageIndex}\"><a ng-click=\"quickPaging.searchModel.paging.toPage(x-1)\">{{x}}</a></li>\r\n\t<li ng-disabled=\"(quickPaging.searchModel.paging.pageIndex + 1) === quickPaging.drawEndRange[quickPaging.drawEndRange.length-1]\"><a ng-click=\"quickPaging.searchModel.paging.toPage(quickPaging.searchModel.paging.pageIndex + 1)\">&raquo;</a></li>\r\n  </ul>\r\n</nav>\r\n\r\n<div class=\"btn-group\" ng-if=\"quickPaging.searchModel.pageCount.length > 1 && quickPaging.maxItems >= quickPaging.searchModel.pageCount.length\">\r\n  <button ng-repeat=\"x in quickPaging.searchModel.pageCount track by $index\" ng-click=\"quickPaging.searchModel.paging.toPage($index)\" ng-disabled=\"$index === quickPaging.searchModel.paging.pageIndex\" class=\"btn btn-primary btn-sm\">{{$index + 1}}</button>\r\n</div>\r\n"
 
-/***/ },
+/***/ }),
 /* 5 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
@@ -323,8 +322,8 @@
 	if(false) {
 		// When the styles change, update the <style> tags
 		if(!content.locals) {
-			module.hot.accept("!!./../node_modules/css-loader/index.js?sourceMap!./../node_modules/sass-loader/index.js?sourceMap!./quick-grid-footer.scss", function() {
-				var newContent = require("!!./../node_modules/css-loader/index.js?sourceMap!./../node_modules/sass-loader/index.js?sourceMap!./quick-grid-footer.scss");
+			module.hot.accept("!!../node_modules/css-loader/index.js?sourceMap!../node_modules/sass-loader/index.js?sourceMap!./quick-grid-footer.scss", function() {
+				var newContent = require("!!../node_modules/css-loader/index.js?sourceMap!../node_modules/sass-loader/index.js?sourceMap!./quick-grid-footer.scss");
 				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 				update(newContent);
 			});
@@ -333,9 +332,9 @@
 		module.hot.dispose(function() { update(); });
 	}
 
-/***/ },
+/***/ }),
 /* 6 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(7)();
 	// imports
@@ -347,9 +346,9 @@
 	// exports
 
 
-/***/ },
+/***/ }),
 /* 7 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	/*
 		MIT License http://www.opensource.org/licenses/mit-license.php
@@ -403,9 +402,9 @@
 	};
 
 
-/***/ },
+/***/ }),
 /* 8 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	/*
 		MIT License http://www.opensource.org/licenses/mit-license.php
@@ -420,7 +419,7 @@
 			};
 		},
 		isOldIE = memoize(function() {
-			return /msie [6-9]\b/.test(window.navigator.userAgent.toLowerCase());
+			return /msie [6-9]\b/.test(self.navigator.userAgent.toLowerCase());
 		}),
 		getHeadElement = memoize(function () {
 			return document.head || document.getElementsByTagName("head")[0];
@@ -655,9 +654,9 @@
 	}
 
 
-/***/ },
+/***/ }),
 /* 9 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	'use strict';
 	
@@ -683,18 +682,15 @@
 	            $scope.$watch(function () {
 	                return $scope.grid.searchModel.paging.isSorting($scope.sortBy.toLowerCase());
 	            }, function (v) {
+	                $element.removeClass('active-1');
+	                $element.removeClass('active-2');
+	                $element.removeClass('active-3');
+	
 	                if (v === false) {
 	                    $element.removeClass('active');
-	                    $element.removeClass('active-1');
-	                    $element.removeClass('active-2');
-	                    $element.removeClass('active-3');
 	                } else {
 	                    $element.addClass('active');
 	                    $element.addClass('active-' + (v + 1));
-	                }
-	
-	                if (quickGrid.searchModel.paging.sortBy.length >= 3) {
-	                    $element.addClass('sort-full');
 	                }
 	            });
 	        }
@@ -705,9 +701,9 @@
 	
 	exports.default = directive;
 
-/***/ },
+/***/ }),
 /* 10 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	'use strict';
 	
@@ -744,6 +740,9 @@
 	                return undefined;
 	            }
 	            var value = this.value;
+	            if (value.toJSON) {
+	                value = value.toJSON();
+	            }
 	            return this.operator + value;
 	        }
 	    }]);
@@ -1059,6 +1058,6 @@
 	    return SearchModel;
 	};
 
-/***/ }
+/***/ })
 /******/ ]);
 //# sourceMappingURL=ng-quick-grid.js.map

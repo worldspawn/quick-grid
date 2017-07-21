@@ -17,6 +17,9 @@ class PrefixOperator {
             return undefined;
         }
         var value = this.value;
+        if (value.toJSON) {
+            value = value.toJSON();
+        }
         return this.operator + value;
     }
 }

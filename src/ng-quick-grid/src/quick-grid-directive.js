@@ -12,7 +12,6 @@ function directive() {
         link: function (scope, element) {
             var body = angular.element(element[0].ownerDocument.querySelector('body'));
             var bodyOff = (ev) => {
-                console.log(ev);
                 element.removeClass('ctrl-hover');
                 body.off('keyup', bodyOff);
             };

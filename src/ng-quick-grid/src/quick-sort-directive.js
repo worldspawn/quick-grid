@@ -18,19 +18,16 @@ function directive($compile) {
             });
 
             $scope.$watch(() => $scope.grid.searchModel.paging.isSorting($scope.sortBy.toLowerCase()), (v) => {
+                $element.removeClass('active-1');
+                $element.removeClass('active-2');
+                $element.removeClass('active-3');
+
                 if (v === false) {
-                    $element.removeClass('active');
-                    $element.removeClass('active-1');
-                    $element.removeClass('active-2');
-                    $element.removeClass('active-3');
+                    $element.removeClass('active');                    
                 }
                 else {
                     $element.addClass('active');
                     $element.addClass('active-' + (v+1));
-                }
-
-                if (quickGrid.searchModel.paging.sortBy.length >= 3) {
-                    $element.addClass('sort-full');
                 }
             });
         }
